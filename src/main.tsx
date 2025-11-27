@@ -1,12 +1,10 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import { DouradosPlusPage } from "./features/eventos/pages/DouradosEventosPage.tsx";
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <div className='min-h-screen bg-bg text-text'>
-      <App />
-    </div>
-  </StrictMode>,
-)
+    <DouradosPlusPage />
+  </StrictMode>
+);

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Organizações de Eventos - Dourados MS</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <!-- Estilo moderno aplicado -->
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --card: rgba(255,255,255,0.06);
+      --muted: #9fb0c8;
+      --text: #e9f2ff;
+      --brand-1: #74f1ff;
+      --brand-2: #7cffc1;
+      --brand-3: #a58cff;
+      --glow: drop-shadow(0 0 16px rgba(116,241,255,.35));
+      --radius: 20px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif;
+      color:var(--text);
+      background: radial-gradient(1200px 800px at 10% -10%, rgba(116,241,255,.15), transparent),
+                  radial-gradient(1000px 600px at 110% 10%, rgba(165,140,255,.12), transparent),
+                  linear-gradient(180deg, #0a0d12, #0b0f14 30%, #0b0f14 70%, #0a0d12);
+      min-height:100vh; overflow-x:hidden;
+    }
+    .container{max-width:1200px; margin:0 auto; padding:24px}
+    h1{font-size:2.5rem; margin-bottom:8px}
+    p.description{color:var(--muted); font-size:1.1rem; margin-bottom:32px}
+
+    .card{
+      background:var(--card);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:var(--radius);
+      padding:24px;
+      margin-bottom:24px;
+    }
+    .card h2{margin-top:0; font-size:1.5rem}
+    .card p{margin:6px 0; color:#cfe0fb}
+    .card a{
+      display:inline-block;
+      margin-top:12px;
+      color:var(--brand-1);
+      text-decoration:none;
+      font-weight:600;
+    }
+    .card a:hover{text-decoration:underline}
+    footer{
+      color:var(--muted);
+      padding:32px 24px;
+      text-align:center;
+      border-top:1px solid rgba(255,255,255,.06)
+    }
+    h2{
+      color: white;
+    }
+
+    /* Estilo da primeira parte */
+    :root {
+      --bg: #0b0f14;
+      --card: rgba(255,255,255,0.06);
+      --muted: #9fb0c8;
+      --text: #e9f2ff;
+      --brand-1: #74f1ff;
+      --brand-2: #7cffc1;
+      --brand-3: #a58cff;
+      --glow: drop-shadow(0 0 16px rgba(116,241,255,.35));
+      --radius: 20px;
+    }
+    *{box-sizing:border-box}
+    html{height:100%}
+    body{
+      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif;
+      color:var(--text);
+      background: radial-gradient(1200px 800px at 10% -10%, rgba(116,241,255,.15), transparent),
+                  radial-gradient(1000px 600px at 110% 10%, rgba(165,140,255,.12), transparent),
+                  linear-gradient(180deg, #0a0d12, #0b0f14 30%, #0b0f14 70%, #0a0d12);
+      min-height:100vh; overflow-x:hidden;
+    }
+    
+    .container{max-width:1200px; margin:0 auto; padding:24px}
+
+    /* Header */
+    .nav{
+      position:sticky; top:0; z-index:1000; backdrop-filter: blur(12px);
+      background: linear-gradient(180deg, rgba(11,15,20,.75), rgba(11,15,20,.35));
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .nav-inner{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 1px;
+    }
+
+    .brand{display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.5px}
+    .logo{width:40px; height:40px; border-radius:10px; background:
+      conic-gradient(from 180deg at 50% 50%, var(--brand-1), var(--brand-2), var(--brand-3), var(--brand-1));
+      filter:var(--glow);
+    }
+    .brand span{font-size:1.25rem}
+
+    /* Tabs */
+    .tabs{display:flex; gap:8px; flex-wrap:wrap}
+    .tab-btn{
+      border:1px solid rgba(255,255,255,.08); background:var(--card); color:var(--text);
+      padding:10px 14px; border-radius:999px; cursor:pointer; font-weight:600; letter-spacing:.2px;
+      transition:transform .15s ease, background .2s ease, border-color .2s ease;
+    }
+    .tab-btn[aria-selected="true"]{
+      background: linear-gradient(90deg, rgba(116,241,255,.18), rgba(165,140,255,.18));
+      border-color: rgba(165,140,255,.45);
+    }
+    .tab-btn:active{transform:scale(.98)}
+
+    /* Hero */
+    .hero{display:grid; grid-template-columns:1.2fr .8fr; gap:20px; align-items:center; padding:24px; }
+
+    .hero-card{background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius);
+      padding:24px; position:relative; overflow:hidden;}
+    .hero-card:before{content:""; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none;
+      background: radial-gradient(600px 200px at 10% 0%, rgba(116,241,255,.15), transparent),
+                  radial-gradient(500px 200px at 90% 20%, rgba(165,140,255,.12), transparent);
+    }
+    .kicker{color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.2em; font-size:.8rem}
+    h1{margin:.2em 0 .6em; font-size:clamp(1.6rem, 1.2rem + 2.5vw, 3rem)}
+    .hero p{color:#cfe0fb; line-height:1.6}
+    .actions{display:flex; gap:12px; margin-top:16px; flex-wrap:wrap}
+
+    /* 
+    Áreas Alteradas
+    */
+    .icon-btn {
+    font-size: 1.2rem;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    cursor: pointer;
+  }
+
+  .filtros-wrap.hidden {
+    display: none;
+  }
+
+  .filtros-wrap {
+  animation: slideDown 0.3s ease;
+  }
+
+  @keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Àreas Alteradas */
+
+    .btn{
+      padding:12px 16px; border-radius:14px; border:1px solid rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      color:var(--text); font-weight:700; cursor:pointer;
+    }
+    .btn.primary{background:linear-gradient(90deg, rgba(116,241,255,.25), rgba(165,140,255,.25)); border-color:rgba(165,140,255,.45)}
+
+    /* Layout */
+    .grid{display:grid; grid-template-columns:repeat(12,1fr); gap:16px}
+    .col-8{grid-column:span 8}
+    .col-4{grid-column:span 4}
+    @media (max-width: 960px){ .hero{grid-template-columns:1fr} .col-8,.col-4{grid-column:span 12} }
+
+    /* Cards */
+    .card{background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); overflow:hidden}
+    .card .img{aspect-ratio:16/9; background:#0f141b; display:block; width:100%; object-fit:cover}
+    .card-body{padding:16px}
+    .title{font-weight:800; margin:0 0 6px}
+    .meta{color:var(--muted); font-size:.92rem}
+    .chip{display:inline-block; padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.08); font-size:.8rem; font-weight:700}
+
+    /* Panels */
+    .panel{display:none}
+    .panel.active{display:block}
+
+    /* Forms */
+    .field{display:flex; flex-direction:column; gap:6px}
+    .field input, .field select, .field textarea{background:rgba(255,255,255,.06); color:var(--text);
+      border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px 12px}
+    .row{display:flex; gap:12px; flex-wrap:wrap}
+    .row > *{flex:1}
+
+    /* Modal */
+    dialog{border:none; border-radius:18px; padding:0; background:var(--card); color:var(--text); width:min(720px, 92vw)}
+    dialog::backdrop{background:rgba(3,8,13,.6)}
+    .modal-header{display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid rgba(255,255,255,.08)}
+    .modal-body{padding:20px}
+
+    /* Footer */
+    footer{color:var(--muted); padding:32px 24px; text-align:center; border-top:1px solid rgba(255,255,255,.06)}
+
+    /* Utility */
+    .hidden{display:none}
+
+      /* Parte Nova Adicionada */
+    .pagina-overlay {
+    position: fixed;
+    inset: 0;
+    background: white;
+    z-index: 1000;
+    padding: 2rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pagina-overlay.hidden {
+    display: none;
+  }
+
+  .pagina-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 1rem;
+  }
+  /* Parte Nova Adicionada */
+
+  /* Parte Nova */
+  * {
+      box-sizing: border-box;
+    }
+     /* Hamburger */
+     .hamburger {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      width: 30px;
+      height: 25px;
+      margin-right: 12px;
+    }
+
+    .hamburger div {
+      background-color: var(--text);
+      height: 3px;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+      margin-right: 0;
+    }
+
+    /* Menu lateral (estilo Amazon) */
+    .side-menu {
+  position: fixed; 
+  top: 0;
+  left: -300px;   
+  width: 300px;
+  height: 100%;
+  background-color: #232f3e;
+  color: white;
+  transition: left 0.3s ease;  
+  z-index: 1100;
+  padding-top: 90px;
+  
+}
+
+.side-menu.active {
+  left: 0; 
+}
+
+
+
+    .side-menu a {
+      display: block;
+      padding: 1rem 1.5rem;
+      color: white;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .side-menu a:hover {
+      background-color: #37475a;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: white;
+    }
+
+    /* Hamburger transform */
+    .hamburger.active div:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger.active div:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active div:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+  </style>
+</head>
+<body>
+
+   <!-- NavBar do topo -->
+   <header class="nav" role="banner">
+    <div class="nav-inner container">
+      <div class="hamburger" id="hamburger" aria-label="Abrir menu" role="button" tabindex="0">
+        <div></div><div></div><div></div>
+      </div>
+      <div class="brand" aria-label="Marca Dourados+">
+        <div class="logo" aria-hidden="true"></div>
+        <span>Dourados<span style="opacity:.7">+</span></span>
+      </div>
+      <nav class="tabs" role="tablist" aria-label="Seções do site">
+        <!-- botões tabs -->  
+        <button class="btn icon-btn" id="btn-toggle-busca" title="Buscar">
+          🔍
+        </button>
+        
+        
+    
+    </div>
+  </header>
+
+  <!-- Menu lateral -->
+  <nav class="side-menu" id="sideMenu" aria-label="Menu lateral de navegação">
+    <span class="close-btn" id="closeBtn" role="button" tabindex="0" aria-label="Fechar menu">&times;</span>
+    <a href="#home" data-url="Projeto Integrador versão alpha 2.0.html">Início</a>
+    <a href="#eventos" data-url="Eventos.html">Eventos e Categorias</a>
+    <a href="#turismo" data-url="TurismoTeste.html">Turismo</a>
+    <a href="#conta" data-url="Conta.html">Sua Conta</a>
+    <a href="#contato" data-url="Contatos.html">Contato</a>
+  </nav>
+        
+      
+    </div>
+
+
+  <div class="container">
+    <h1>Contatos de Organizações</h1>
+    <p class="description">Organizações que realizam grandes eventos em Dourados-MS ou cedem seus espaços para isso.</p>
+
+    <!-- Cards de organizações -->
+    <div class="card">
+      <h2>Universidade Federal da Grande Dourados (UFGD)</h2>
+      <p><strong>E-mail Principal:</strong> gptem@ufgd.edu.br</p>
+      <p><strong>E-mail Alternativo:</strong> gptemufgd@gmail.com</p>
+      <p><strong>Telefone:</strong> (67) 3410-2002</p>
+      <p><strong>Instagram/Facebook:</strong> @ufgdoficial</p>
+      <p><strong>Endereço:</strong> Rodovia Dourados/Itahum, Km 12 - Cidade Universitária</p>
+      <a href="https://portal.ufgd.edu.br/" target="_blank">Visitar site da UFGD</a>
+    </div>
+
+    <div class="card">
+      <h2>Centro de Eventos UNIGRAN</h2>
+      <p><strong>E-mail:</strong> (não informado)</p>
+      <p><strong>Telefone:</strong> (67) 3411-4141</p>
+      <p><strong>WhatsApp:</strong> (67) 99286-2542</p>
+      <p><strong>Instagram/Facebook:</strong> @unigranoficial</p>
+      <p><strong>Endereço:</strong> Rua Balbina de Matos, 2121 - Vila São Luiz</p>
+      <a href="https://eventos.unigran.br/eventos/" target="_blank">Visitar site da UNIGRAN</a>
+    </div>
+
+    <div class="card">
+      <h2>Secretaria Municipal de Cultura (Prefeitura)</h2>
+      <p><strong>E-mail:</strong> cultura@dourados.ms.gov.br</p>
+      <p><strong>Telefone:</strong> (67) 3411-7709</p>
+      <p><strong>WhatsApp:</strong> (67) 98476-5050</p>
+      <p><strong>Instagram/Facebook:</strong> @semcdourados</p>
+      <p><strong>Endereço:</strong> Av. Presidente Vargas, s/n - Teatro Municipal</p>
+      <a href="https://cidadao.dourados.ms.gov.br/" target="_blank">Visitar site da Prefeitura</a>
+    </div>
+
+    <div class="card">
+      <h2>Evento MS</h2>
+      <p><strong>Descrição:</strong> Organização de formaturas, casamentos e eventos corporativos.</p>
+      <p><strong>Endereço:</strong> Rua Izzat Bussuan, 08 – Parque Alvorada</p>
+      <a href="https://www.eventoms.com.br/" target="_blank">Visitar site do Evento MS</a>
+    </div>
+
+    <div class="card">
+      <h2>Game Over Produções de Eventos</h2>
+      <p><strong>Descrição:</strong> Produção de festas e eventos sociais com estrutura completa.</p>
+      <p><strong>Endereço:</strong> Rua João Demamann Filho, 965 – Parque Alvorada</p>
+      <a href="https://www.solutudo.com.br/empresas/ms/dourados/organizacao+de+festas+e+eventos?pagina=1" target="_blank">Ver mais na Solutudo</a>
+    </div>
+
+    <div class="card">
+      <h2>Auditório do Sindicom</h2>
+      <p><strong>Descrição:</strong> Espaço para eventos empresariais, palestras e encontros culturais.</p>
+      <p><strong>Endereço:</strong> Avenida Marcelino Pires, 2101 – Vila São Francisco</p>
+      <a href="https://www.solutudo.com.br/empresas/ms/dourados/organizacao+de+festas+e+eventos?pagina=1" target="_blank">Ver mais na Solutudo</a>
+    </div>
+
+    <div class="card">
+      <h2>JL Festas e Eventos</h2>
+      <p><strong>Descrição:</strong> Local amplo para festas, formaturas e eventos comunitários.</p>
+      <p><strong>Endereço:</strong> Avenida Marcelino Pires – Vila São Francisco</p>
+    </div>
+
+    <div class="card">
+      <h2>Photos Produtora Foto e Vídeo</h2>
+      <p><strong>Descrição:</strong> Serviços de fotografia e estrutura audiovisual para eventos.</p>
+      <p><strong>Endereço:</strong> Rua Rio Brilhante, 477 – Jardim São Pedro</p>
+    </div>
+  </div>
+<!-- Voltar -->
+ 
+  <footer>
+    &copy; 2025 - Página informativa sobre eventos em Dourados-MS
+  </footer>
+
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const sideMenu = document.getElementById('sideMenu');
+    const closeBtn = document.getElementById('closeBtn');
+
+    // Função para abrir/fechar menu lateral
+    function toggleMenu() {
+      const isActive = sideMenu.classList.toggle('active');
+      hamburger.classList.toggle('active', isActive);
+      hamburger.setAttribute('aria-expanded', isActive);
+    }
+
+    hamburger.addEventListener('click', toggleMenu);
+
+    closeBtn.addEventListener('click', () => {
+      sideMenu.classList.remove('active');
+      hamburger.classList.remove('active');
+      hamburger.setAttribute('aria-expanded', false);
+    });
+
+    // Abrir e fechar com teclado para acessibilidade
+    hamburger.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleMenu();
+      }
+    });
+
+    closeBtn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        sideMenu.classList.remove('active');
+        hamburger.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', false);
+        hamburger.focus();
+      }
+    });
+
+    // Fechar menu clicando fora dele
+    window.addEventListener('click', (event) => {
+      if (!sideMenu.contains(event.target) && !hamburger.contains(event.target)) {
+        sideMenu.classList.remove('active');
+        hamburger.classList.remove('active');
+        hamburger.setAttribute('aria-expanded', false);
+      }
+    });
+    
+    // Evita fechar ao clicar dentro do menu
+    sideMenu.addEventListener('click', (event) => {
+      event.stopPropagation();
+    });
+  </script>
+
+<script>
+  document.querySelectorAll('.side-menu a').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const url = link.getAttribute('data-url');
+    if (url) {
+      window.location.href = url;
+    }
+  });
+});
+
+</script>
+</body>
+</html>

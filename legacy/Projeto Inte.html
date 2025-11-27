@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eventos Super Divertidos</title>
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --card: rgba(255,255,255,0.06);
+      --muted: #9fb0c8;
+      --text: #e9f2ff;
+      --brand-1: #74f1ff;
+      --brand-2: #7cffc1;
+      --brand-3: #a58cff;
+      --glow: drop-shadow(0 0 16px rgba(116,241,255,.35));
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, sans-serif;
+      background: radial-gradient(1200px 800px at 10% -10%, rgba(116,241,255,.15), transparent),
+                  radial-gradient(1000px 600px at 110% 10%, rgba(165,140,255,.12), transparent),
+                  linear-gradient(180deg, #0a0d12, #0b0f14 30%, #0b0f14 70%, #0a0d12);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    header {
+      text-align: center;
+      padding: 2rem;
+      background: linear-gradient(180deg, rgba(11,15,20,.75), rgba(11,15,20,.35));
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin: 0;
+      color: var(--brand-1);
+      filter: var(--glow);
+    }
+
+    section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .evento {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      width: 30%;
+      height: 350px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+    }
+
+    .evento:hover {
+      transform: translateY(-10px);
+    }
+
+    .evento img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0.4;
+    }
+
+    .info-evento {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 15px;
+      border-radius: 12px;
+      color: var(--text);
+      width: 80%;
+      backdrop-filter: blur(6px);
+    }
+
+    .info-evento h2 {
+      font-size: 1.4em;
+      margin-bottom: 10px;
+      color: var(--brand-2);
+    }
+
+    .info-evento p {
+      margin: 5px 0;
+      font-size: 0.95em;
+    }
+
+    .btn-ver-eventos {
+      background: linear-gradient(90deg, rgba(116,241,255,.25), rgba(165,140,255,.25));
+      color: var(--text);
+      padding: 10px 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.08);
+      text-decoration: none;
+      margin-top: 10px;
+      display: inline-block;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .btn-ver-eventos:hover {
+      background: rgba(165,140,255,.35);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(3,8,13,.6);
+      padding-top: 60px;
+    }
+
+    .modal-content {
+      background: var(--card);
+      color: var(--text);
+      margin: 5% auto;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,.08);
+      width: 80%;
+      max-width: 500px;
+      border-radius: var(--radius);
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      color: var(--brand-3);
+    }
+
+    .close {
+      color: var(--muted);
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .close:hover {
+      color: var(--brand-1);
+    }
+
+    @media screen and (max-width: 768px) {
+      .evento {
+        width: 48%;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .evento {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Eventos Super Divertidos</h1>
+  </header>
+
+  <section>
+    <!-- Evento 1 -->
+    <div class="evento">
+      <img src="https://i.imgur.com/UYUTkcm.png" alt="Show do Renato Albani">
+      <div class="info-evento">
+        <h2>Show do Renato Albani</h2>
+        <p><strong>Data:</strong> 26 de Outubro 2025</p>
+        <p><strong>Local:</strong> Centro de Eventos UNIGRAN</p>
+        <p><strong>Descrição:</strong> Comédia stand-up sobre o cotidiano com humor refinado.</p>
+        <button class="btn-ver-eventos" onclick="openModal('evento1')">Entrar</button>
+      </div>
+    </div>
+
+    <!-- Evento 2 -->
+    <div class="evento">
+      <img src="https://via.placeholder.com/350x350?text=Evento+2" alt="Evento 2">
+      <div class="info-evento">
+        <h2>Informa o Evento</h2>
+        <p><strong>Data:</strong> Informa a Data</p>
+        <p><strong>Local:</strong> Informa Lugar</p>
+        <p><strong>Descrição:</strong> Como vai ser o show ou evento.</p>
+        <button class="btn-ver-eventos" onclick="openModal('evento2')">Entrar</button>
+      </div>
+    </div>
+
+    <!-- Evento 3 -->
+    <div class="evento">
+      <img src="https://via.placeholder.com/350x350?text=Evento+3" alt="Evento 3">
+      <div class="info-evento">
+        <h2>Informa o Evento</h2>
+        <p><strong>Data:</strong> Informa a Data</p>
+        <p><strong>Local:</strong> Informa Lugar</p>
+        <p><strong>Descrição:</strong> Como vai ser o show ou evento.</p>
+        <button class="btn-ver-eventos" onclick="openModal('evento3')">Entrar</button>
+      </div>
+    </div>
+
+    <!-- Evento 4 -->
+    <div class="evento">
+      <img src="https://via.placeholder.com/350x350?text=Evento+4" alt="Evento 4">
+      <div class="info-evento">
+        <h2>Informa o Evento</h2>
+        <p><strong>Data:</strong> Informa a Data</p>
+        <p><strong>Local:</strong> Informa Lugar</p>
+        <p><strong>Descrição:</strong> Como vai ser o show ou evento.</p>
+        <button class="btn-ver-eventos" onclick="openModal('evento4')">Entrar</button>
+      </div>
+    </div>
+
+    <!-- Evento 5 -->
+    <div class="evento">
+      <img src="https://via.placeholder.com/350x350?text=Evento+5" alt="Evento 5">
+      <div class="info-evento">
+        <h2>Informa o Evento</h2>
+        <p><strong>Data:</strong> Informa a Data</p>
+        <p><strong>Local:</strong> Informa Lugar</p>
+        <p><strong>Descrição:</strong> Como vai ser o show ou evento.</p>
+        <button class="btn-ver-eventos" onclick="openModal('evento5')">Entrar</button>
+      </div>
+    </div>
+
+
+  <!-- Evento 6 -->
+  <div class="evento">
+    <img src="https://via.placeholder.com/350x350?text=Evento+6" alt="Evento 6">
+    <div class="info-evento">
+      <h2>Informa o Evento</h2>
+      <p><strong>Data:</strong> Informa a Data</p>
+      <p><strong>Local:</strong> Informa Lugar</p>
+      <p><strong>Descrição:</strong> Como vai ser o show ou evento.</p>
+      <button class="btn-ver-eventos" onclick="openModal('evento6')">Entrar</button>
+    </div>
+  </div>
+  <!-- Modal Dinâmica -->
+  <div id="eventoModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2 id="modalTitulo">Título do Evento</h2>
+      </div>
+      <div class="modal-body">
+        <p><strong>Data:</strong> <span id="modalData"></span></p>
+        <p><strong>Local:</strong> <span id="modalLocal"></span></p>
+        <p><strong>Descrição:</strong> <span id="modalDescricao"></span></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function openModal(titulo, data, local, descricao) {
+      document.getElementById('modalTitulo').textContent = titulo;
+      document.getElementById('modalData').textContent = data;
+      document.getElementById('modalLocal').textContent = local;
+      document.getElementById('modalDescricao').textContent = descricao;
+      document.getElementById('eventoModal').style.display = "block";
+    }
+
+    function closeModal() {
+      document.getElementById('eventoModal').style.display = "none";
+    }
+
+    window.onclick = function(event) {
+      const modal = document.getElementById('eventoModal');
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    }
+  </script>
+
+</body>
+</html>

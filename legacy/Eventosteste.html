@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>eventosTestes</title>
+  <meta name="description" content="Agenda de eventos e guia de pontos turísticos de Dourados e região." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --card: rgba(255,255,255,0.06);
+      --muted: #9fb0c8;
+      --text: #e9f2ff;
+      --brand-1: #74f1ff;
+      --brand-2: #7cffc1;
+      --brand-3: #a58cff;
+      --glow: drop-shadow(0 0 16px rgba(116,241,255,.35));
+      --radius: 20px;
+    }
+    *{box-sizing:border-box}
+    html{height:100%}
+    body{
+      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif;
+      color:var(--text);
+      background: radial-gradient(1200px 800px at 10% -10%, rgba(116,241,255,.15), transparent),
+                  radial-gradient(1000px 600px at 110% 10%, rgba(165,140,255,.12), transparent),
+                  linear-gradient(180deg, #0a0d12, #0b0f14 30%, #0b0f14 70%, #0a0d12);
+      min-height:100vh; overflow-x:hidden;
+    }
+    
+    .container{max-width:1200px; margin:0 auto; padding:24px}
+
+    /* Header */
+    .nav{
+      position:sticky; top:0; z-index:1000; backdrop-filter: blur(12px);
+      background: linear-gradient(180deg, rgba(11,15,20,.75), rgba(11,15,20,.35));
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .nav-inner{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 1px;
+    }
+
+    .brand{display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.5px}
+    .logo{width:40px; height:40px; border-radius:10px; background:
+      conic-gradient(from 180deg at 50% 50%, var(--brand-1), var(--brand-2), var(--brand-3), var(--brand-1));
+      filter:var(--glow);
+    }
+    .brand span{font-size:1.25rem}
+
+    /* Tabs */
+    .tabs{display:flex; gap:8px; flex-wrap:wrap}
+    .tab-btn{
+      border:1px solid rgba(255,255,255,.08); background:var(--card); color:var(--text);
+      padding:10px 14px; border-radius:999px; cursor:pointer; font-weight:600; letter-spacing:.2px;
+      transition:transform .15s ease, background .2s ease, border-color .2s ease;
+    }
+    .tab-btn[aria-selected="true"]{
+      background: linear-gradient(90deg, rgba(116,241,255,.18), rgba(165,140,255,.18));
+      border-color: rgba(165,140,255,.45);
+    }
+    .tab-btn:active{transform:scale(.98)}
+
+    /* Hero */
+    .hero{display:grid; grid-template-columns:1.2fr .8fr; gap:20px; align-items:center; padding:24px; }
+
+    .hero-card{background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius);
+      padding:24px; position:relative; overflow:hidden;}
+    .hero-card:before{content:""; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none;
+      background: radial-gradient(600px 200px at 10% 0%, rgba(116,241,255,.15), transparent),
+                  radial-gradient(500px 200px at 90% 20%, rgba(165,140,255,.12), transparent);
+    }
+    .kicker{color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.2em; font-size:.8rem}
+    h1{margin:.2em 0 .6em; font-size:clamp(1.6rem, 1.2rem + 2.5vw, 3rem)}
+    .hero p{color:#cfe0fb; line-height:1.6}
+    .actions{display:flex; gap:12px; margin-top:16px; flex-wrap:wrap}
+
+    /* 
+    Áreas Alteradas
+    */
+    .icon-btn {
+    font-size: 1.2rem;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    cursor: pointer;
+  }
+
+  .filtros-wrap.hidden {
+    display: none;
+  }
+
+  .filtros-wrap {
+  animation: slideDown 0.3s ease;
+  }
+
+  @keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Àreas Alteradas */
+
+    .btn{
+      padding:12px 16px; border-radius:14px; border:1px solid rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      color:var(--text); font-weight:700; cursor:pointer;
+    }
+    .btn.primary{background:linear-gradient(90deg, rgba(116,241,255,.25), rgba(165,140,255,.25)); border-color:rgba(165,140,255,.45)}
+
+    /* Layout */
+    .grid{display:grid; grid-template-columns:repeat(12,1fr); gap:16px}
+    .col-8{grid-column:span 8}
+    .col-4{grid-column:span 4}
+    @media (max-width: 960px){ .hero{grid-template-columns:1fr} .col-8,.col-4{grid-column:span 12} }
+
+    /* Cards */
+    .card{background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); overflow:hidden}
+    .card .img{aspect-ratio:16/9; background:#0f141b; display:block; width:100%; object-fit:cover}
+    .card-body{padding:16px}
+    .title{font-weight:800; margin:0 0 6px}
+    .meta{color:var(--muted); font-size:.92rem}
+    .chip{display:inline-block; padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.08); font-size:.8rem; font-weight:700}
+
+    /* Panels */
+    .panel{display:none}
+    .panel.active{display:block}
+
+    /* Forms */
+    .field{display:flex; flex-direction:column; gap:6px}
+    .field input, .field select, .field textarea{background:rgba(255,255,255,.06); color:var(--text);
+      border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px 12px}
+    .row{display:flex; gap:12px; flex-wrap:wrap}
+    .row > *{flex:1}
+
+    /* Modal */
+    dialog{border:none; border-radius:18px; padding:0; background:var(--card); color:var(--text); width:min(720px, 92vw)}
+    dialog::backdrop{background:rgba(3,8,13,.6)}
+    .modal-header{display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid rgba(255,255,255,.08)}
+    .modal-body{padding:20px}
+
+    /* Footer */
+    footer{color:var(--muted); padding:32px 24px; text-align:center; border-top:1px solid rgba(255,255,255,.06)}
+
+    /* Utility */
+    .hidden{display:none}
+
+      /* Parte Nova Adicionada */
+    .pagina-overlay {
+    position: fixed;
+    inset: 0;
+    background: white;
+    z-index: 1000;
+    padding: 2rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pagina-overlay.hidden {
+    display: none;
+  }
+
+  .pagina-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 1rem;
+  }
+  /* Parte Nova Adicionada */
+
+  /* Parte Nova */
+  * {
+      box-sizing: border-box;
+    }
+     /* Hamburger */
+     .hamburger {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      width: 30px;
+      height: 25px;
+      margin-right: 12px;
+    }
+
+    .hamburger div {
+      background-color: var(--text);
+      height: 3px;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+      margin-right: 0;
+    }
+
+    /* Menu lateral (estilo Amazon) */
+    .side-menu {
+      position: fixed;
+      top: 0;
+      left: -300px;
+      width: 300px;
+      height: 100%;
+      background-color: #232f3e;
+      color: white;
+      transition: left 0.3s ease;
+      z-index: 200;
+      padding-top: 90px; /* espaço da navbar */
+    }
+
+    .side-menu.active {
+      left: 0;
+    }
+
+    .side-menu a {
+      display: block;
+      padding: 1rem 1.5rem;
+      color: white;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .side-menu a:hover {
+      background-color: #37475a;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: white;
+    }
+
+    /* Hamburger transform */
+    .hamburger.active div:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger.active div:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active div:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+    @media (max-width: 600px) {
+  /* Layouts de grid e colunas ocupam toda a largura */
+  .grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+  .col-8, .col-4 {
+    grid-column: span 12 !important;
+  }
+  
+  /* Ajuste tamanhos de fonte para melhor leitura */
+  h1 {
+    font-size: 1.5rem;
+  }
+  .btn {
+    padding: 10px 14px;
+    font-size: 1rem;
+  }
+  
+  /* Ajuste o header para comportar o menu hamburger sem ocupar muita altura */
+  .nav-inner {
+    padding: 10px 8px;
+  }
+  
+  /* Ajustar espaçamento dos cards para ficar mais compacto */
+  .card {
+    border-radius: 12px;
+    padding: 16px;
+  }
+  
+  /* Ajustar hero para coluna única */
+  .hero {
+    grid-template-columns: 1fr !important;
+    padding: 1rem !important;
+    text-align: center;
+  }
+  
+  /* Esconder elementos desnecessários ou que atrapalham no mobile */
+  .filtros-wrap {
+    padding: 12px;
+  }
+
+  /* Ajustar botões e inputs para larguras máximas */
+  input, select, textarea {
+    width: 100%;
+    font-size: 1rem;
+  }
+}
+    
+  /* Parte Nova */
+  </style>
+</head>
+<body>
+  <!-- NAV -->
+   <!-- NOVO -->
+   <header class="nav">
+    <div class="nav-inner container">
+      <div class="hamburger" id="hamburger" aria-label="Abrir menu" role="button" tabindex="0">
+        <div></div><div></div><div></div>
+      </div>
+      <div class="brand" aria-label="Marca Dourados+">
+        <div class="logo" aria-hidden="true"></div>
+        <span>Dourados<span style="opacity:.7">+</span></span>
+      </div>
+      <nav class="tabs" role="tablist" aria-label="Seções do site">
+        <!-- botões tabs -->  
+        <button class="btn icon-btn" id="btn-toggle-busca" title="Buscar">
+          🔍
+        </button>
+        <button class="tab-btn" role="tab" aria-selected="true" data-target="#tab-eventos">Eventos</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-target="#tab-turismo">Pontos Turísticos</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-target="#tab-cidades">Cidades da Região</button>
+        
+      
+        <div class="side-menu" id="sideMenu">
+          <span class="close-btn" id="closeBtn">&times;</span>
+          <a href="#home" data-url="Projeto Integrador versão alpha 2.0.html">Início</a>
+          <a href="#eventos" data-url="Eventos.html">Eventos</a>
+          <a href="#turismo" data-url="#">Turismo</a>
+          <a href="#categorias" data-url="#">Categorias</a>
+          <a href="#conta" data-url="#">Sua Conta</a>
+          <a href="#pedidos" data-url="pedidos.html" >Pedidos</a>
+          <a href="#contato" data-url="Contatos.html">Contato</a>
+        </div>
+        
+      </nav>
+    </div>
+  </header>
+    <!-- NOVO -->
+  <!--
+  Áreas Alteradas -->
+  
+  <div class="filtros-wrap hidden" id="filtros-topo">
+    <div class="container hero-card" style="margin-top: -16px;">
+      <div class="kicker">Busca Rápida</div>
+      <div class="row" style="margin-top:10px;">
+        <div class="field"><label for="q">Pesquisar</label><input id="q" placeholder="Busque por título, local, categoria…"/></div>
+        <div class="field"><label for="f-cat">Categoria</label>
+          <select id="f-cat" style="background-color: #2c2c2c;">
+            <option value="">Todas</option>
+            <option>Show</option>
+            <option>Esporte</option>
+            <option>Feira</option>
+            <option>Teatro</option>
+            <option>Gastronomia</option>
+          </select>
+        </div>
+        <div class="field"><label for="f-data">A partir de</label><input type="date" id="f-data"/></div>
+      </div>
+      <div class="actions">
+        <button class="btn" id="btn-filtrar">Aplicar filtros</button>
+        <button class="btn" id="btn-limpar">Limpar</button>
+        <button class="btn primary" id="btn-novo-evento">+ Novo evento</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Àreas Alteradas -->
+
+  <main class="container">
+    <!-- HERO -->
+    <section class="hero" style="display: flex;
+    align-items: center;     
+    justify-content: center; 
+    min-height: 10vh;      
+    padding: 2rem;
+    text-align: center;">
+      <div class="hero-card" style="max-width: 800px;
+    width: 100%;">
+        <div class="kicker">Agenda & Guia • Dourados/MS</div>
+        <h1>Descubra o que rola na cidade e explore o melhor do turismo local.</h1>
+        <p>Uma plataforma simples e poderosa para divulgar <strong>eventos</strong>, conhecer <strong>pontos turísticos</strong> e cadastrar informações de <strong>cidades da região</strong>. Visual inovador, rápido e acessível — tudo em um único arquivo HTML.</p>
+        <div class="actions">
+
+          <a class="btn primary" href="#tab-eventos" data-jump>Ver eventos</a>
+          <a class="btn" href="#tab-turismo" data-jump>Explorar turismo</a>
+        </div>
+      </div>
+      <!-- Àrea de Pesquisa rápida retirada -->
+    </section>
+
+    <!-- TABS CONTENT -->
+     <section id="pedidos">
+      <a href="C:\Atividades 2024 253\OP-Luan\VSCODE\PROJETO TURISMO\Eventosteste.html"></a>
+     </section>
+    <section id="tab-eventos" class="panel active" role="tabpanel" aria-label="Lista de eventos">
+      <div class="grid" id="eventos-grid"></div>
+    </section>
+
+    <section id="tab-turismo" class="panel" role="tabpanel" aria-label="Pontos turísticos">
+      <div class="grid">
+        <div class="col-8">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="field">
+                  <label for="cidade-select">Cidade</label>
+                  <select id="cidade-select"></select>
+                </div>
+                <div class="field">
+                  <label for="busca-ponto">Buscar ponto</label>
+                  <input id="busca-ponto" placeholder="Ex.: Parque, Museu…" />
+                </div>
+                <div class="actions" style="margin-left:auto">
+                  <button class="btn" id="btn-add-ponto">+ Novo ponto</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="pontos-lista" class="grid" style="margin-top:16px"></div>
+        </div>
+        <div class="col-4">
+          <div class="card">
+            <div class="card-body">
+              <h3 class="title">Sobre</h3>
+              <p class="meta">Cadastre e gerencie pontos turísticos de Dourados e adicione cidades da região para ampliar o guia.</p>
+              <div class="actions"><button class="btn" id="btn-add-cidade">+ Nova cidade</button></div>
+            </div>
+          </div>
+          <div class="card" style="margin-top:16px">
+            <div class="card-body">
+              <h3 class="title">Dica rápida</h3>
+              <p class="meta">Clicando em um cartão, você vê os detalhes completos e pode editar as informações.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tab-cidades" class="panel" role="tabpanel" aria-label="Cidades da região">
+      <div class="grid" id="cidades-grid"></div>
+    </section>
+
+  </main>
+
+  <footer>
+    Dourados+ • Projeto Inovador • Turma 2024.45.253 • Senac-MS.
+  </footer>
+
+  <!-- MODAIS -->
+  <dialog id="modal-evento" style="background-color: #1d1e1f;">
+    <div class="modal-header">
+      <strong id="modal-evento-titulo">Novo evento</strong>
+      <button class="btn" data-close>Fechar</button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="field"><label>Título</label><input id="ev-titulo"></div>
+        <div class="field"><label>Categoria</label>
+          <select id="ev-cat" style="background-color: #1d1e1f;"><option>Show</option><option>Esporte</option><option>Feira</option><option>Teatro</option><option>Gastronomia</option></select>
+        </div>
+      </div>
+      <div class="row">
+        <div class="field"><label>Data</label><input type="date" id="ev-data"></div>
+        <div class="field"><label>Hora</label><input type="time" id="ev-hora"></div>
+        <div class="field"><label>Preço</label><input id="ev-preco" placeholder="Ex.: Gratuito ou R$ 30,00"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>Local</label><input id="ev-local" placeholder="Endereço / bairro"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>Imagem (URL)</label><input id="ev-img" placeholder="Cole o link da imagem"></div>
+      </div>
+      <div class="field"><label>Descrição</label><textarea id="ev-desc" rows="4" placeholder="Detalhes do evento…"></textarea></div>
+      <div class="actions">
+        <button class="btn" id="ev-salvar">Salvar</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="modal-ponto">
+    <div class="modal-header">
+      <strong>Novo ponto turístico</strong>
+      <button class="btn" data-close>Fechar</button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="field"><label>Nome</label><input id="pt-nome"></div>
+        <div class="field"><label>Cidade</label><select id="pt-cidade"></select></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>Tipo</label><input id="pt-tipo" placeholder="Parque, Museu, Praça…"></div>
+        <div class="field"><label>Horário</label><input id="pt-horario" placeholder="Ex.: Ter–Dom, 9h–18h"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>Imagem (URL)</label><input id="pt-img" placeholder="Cole o link da imagem"></div>
+      </div>
+      <div class="field"><label>Descrição</label><textarea id="pt-desc" rows="4"></textarea></div>
+      <div class="actions"><button class="btn" id="pt-salvar">Salvar</button></div>
+    </div>
+  </dialog>
+
+  <dialog id="modal-cidade">
+    <div class="modal-header">
+      <strong>Nova cidade</strong>
+      <button class="btn" data-close>Fechar</button>
+    </div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="field"><label>Nome</label><input id="cd-nome" placeholder="Ex.: Itaporã"></div>
+        <div class="field"><label>Estado</label><input id="cd-uf" maxlength="2" value="MS"></div>
+      </div>
+      <div class="field"><label>Descrição</label><textarea id="cd-desc" rows="3" placeholder="Resumo da cidade"></textarea></div>
+      <div class="actions"><button class="btn" id="cd-salvar">Salvar</button></div>
+    </div>
+  </dialog>
+
+  <script>
+    // --- Estado inicial (pode editar livremente) ---
+    const state = {
+      eventos: [
+        { id: crypto.randomUUID(), titulo: "Festival Gastronômico do Centro", cat: "Gastronomia", data: "2025-09-20", hora: "18:00", local:"Rua Ponciano, Centro", preco:"Gratuito", img:"https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?q=80&w=1200&auto=format&fit=crop", desc:"Barracas, food trucks e música ao vivo com artistas locais." },
+        { id: crypto.randomUUID(), titulo: "Corrida Parque dos Ipês 10K", cat: "Esporte", data: "2025-10-12", hora: "07:00", local:"Parque dos Ipês", preco:"R$ 60,00", img:"https://images.unsplash.com/photo-1520975682031-a6d9a185c8ec?q=80&w=1200&auto=format&fit=crop", desc:"Prova de 5K e 10K com kit do atleta e medalha de participação." },
+        { id: crypto.randomUUID(), titulo: "Japão Fest", cat: "Gastronomia", data: "2025-10-12", hora: "07:00", local:"Parque dos Ipês", preco:"R$ 60,00", img:"https://images.unsplash.com/photo-1520975682031-a6d9a185c8ec?q=80&w=1200&auto=format&fit=crop", desc:"Prova de 5K e 10K com kit do atleta e medalha de participação." },
+
+      ],
+    };
+
+    // --- Persistência ---
+    const LS_KEY = "douradosplus-data-v1";
+    const load = () => {
+      try{ const raw = localStorage.getItem(LS_KEY); if(raw){ const parsed = JSON.parse(raw); if(parsed.events && parsed.cidades){ state.eventos = parsed.events; state.cidades = parsed.cidades; } } }catch(e){ console.warn(e) }
+    }
+    const save = () => localStorage.setItem(LS_KEY, JSON.stringify({ events: state.eventos, cidades: state.cidades }));
+
+    load();
+
+    // --- Helpers UI ---
+    const $ = (s, r=document) => r.querySelector(s);
+    const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+    const fmtData = (d) => new Date(d+"T00:00:00").toLocaleDateString("pt-BR", { timeZone: "America/Campo_Grande" });
+
+    // --- Navegação por abas ---
+    $$(".tab-btn").forEach(btn=>btn.addEventListener("click", ()=>{
+      $$(".tab-btn").forEach(b=>b.setAttribute("aria-selected","false"));
+      btn.setAttribute("aria-selected","true");
+      $$(".panel").forEach(p=>p.classList.remove("active"));
+      const tgt = btn.getAttribute("data-target");
+      $(tgt).classList.add("active");
+      history.replaceState(null, "", tgt);
+    }));
+
+    // Links de pulo
+    $$('[data-jump]').forEach(a=>a.addEventListener('click', (e)=>{
+      e.preventDefault(); const tgt = a.getAttribute('href'); const btn = $(`.tab-btn[data-target="${tgt}"]`); if(btn) btn.click();
+      window.scrollTo({top: document.querySelector('.nav').offsetHeight, behavior:'smooth'});
+    }));
+
+    // --- Render de eventos ---
+    const gridEventos = $("#eventos-grid");
+
+    function cardEvento(ev){
+      const el = document.createElement('div');
+      el.className = 'card';
+      el.style.gridColumn = 'span 4';
+      el.innerHTML = `
+        <img class="img" src="${ev.img || ''}" alt="Imagem do evento" onerror="this.src='https://picsum.photos/800/450?blur=2'"/>
+        <div class="card-body">
+          <div class="row" style="align-items:center; justify-content:space-between">
+            <span class="chip">${ev.cat}</span>
+            <small class="meta">${fmtData(ev.data)} • ${ev.hora || ''}</small>
+          </div>
+          <h3 class="title">${ev.titulo}</h3>
+          <div class="meta">${ev.local} • ${ev.preco}</div>
+        </div>`;
+      el.querySelectorAll('button').forEach(b=>{
+        b.addEventListener('click', ()=>handleAcaoEvento(b.getAttribute('data-acao'), ev.id));
+      });
+      return el;
+    }
+
+    function renderEventos(filtro={}){
+      gridEventos.innerHTML = '';
+      const {q, cat, dataMin} = filtro;
+      const itens = state.eventos
+        .slice()
+        .sort((a,b)=> a.data.localeCompare(b.data))
+        .filter(ev => {
+          const okCat = !cat || ev.cat === cat;
+          const okData = !dataMin || ev.data >= dataMin;
+          const txt = `${ev.titulo} ${ev.local} ${ev.cat}`.toLowerCase();
+          const okQ = !q || txt.includes(q.toLowerCase());
+          return okCat && okData && okQ;
+        });
+      if(!itens.length){
+        const empty = document.createElement('div'); empty.className='card'; empty.style.gridColumn='span 12';
+        empty.innerHTML = `<div class="card-body"><div class="meta">Nenhum evento encontrado. Tente ajustar os filtros.</div></div>`;
+        gridEventos.appendChild(empty); return;
+      }
+      itens.forEach(ev => gridEventos.appendChild(cardEvento(ev)));
+    }
+
+    renderEventos();
+
+    // Filtros
+    $("#btn-filtrar").addEventListener('click', ()=>{
+      renderEventos({ q: $("#q").value, cat: $("#f-cat").value, dataMin: $("#f-data").value });
+    });
+    $("#btn-limpar").addEventListener('click', ()=>{
+      $("#q").value=''; $("#f-cat").value=''; $("#f-data").value=''; renderEventos();
+    });
+
+    // CRUD Evento
+    const dlgEvento = $("#modal-evento");
+    const openEvento = (ev=null)=>{
+      dlgEvento.showModal();
+      $("#modal-evento-titulo").textContent = ev? "Editar evento" : "Novo evento";
+      $("#ev-titulo").value = ev?.titulo || '';
+      $("#ev-cat").value = ev?.cat || 'Show';
+      $("#ev-data").value = ev?.data || '';
+      $("#ev-hora").value = ev?.hora || '';
+      $("#ev-preco").value = ev?.preco || '';
+      $("#ev-local").value = ev?.local || '';
+      $("#ev-img").value = ev?.img || '';
+      $("#ev-desc").value = ev?.desc || '';
+      dlgEvento.dataset.editing = ev? ev.id : '';
+    }
+
+    $("#btn-novo-evento").addEventListener('click', ()=>openEvento());
+    $$('dialog [data-close]').forEach(b=>b.addEventListener('click', e=> e.target.closest('dialog').close()));
+
+    $("#ev-salvar").addEventListener('click', ()=>{
+      const novo = {
+        id: dlgEvento.dataset.editing || crypto.randomUUID(),
+        titulo: $("#ev-titulo").value.trim(),
+        cat: $("#ev-cat").value,
+        data: $("#ev-data").value,
+        hora: $("#ev-hora").value,
+        preco: $("#ev-preco").value.trim() || 'Gratuito',
+        local: $("#ev-local").value.trim(),
+        img: $("#ev-img").value.trim(),
+        desc: $("#ev-desc").value.trim()
+      };
+      if(!novo.titulo || !novo.data || !novo.local){ alert('Preencha ao menos Título, Data e Local.'); return; }
+      const idx = state.eventos.findIndex(e=>e.id===novo.id);
+      if(idx>=0) state.eventos[idx]=novo; else state.eventos.push(novo);
+      save(); renderEventos(); dlgEvento.close();
+    });
+
+    function handleAcaoEvento(acao, id){
+      const ev = state.eventos.find(e=>e.id===id);
+      if(!ev) return;
+      if(acao==='detalhes'){
+        alert(`${ev.titulo}\n\n${fmtData(ev.data)} ${ev.hora||''}\n${ev.local}\n${ev.preco}\n\n${ev.desc}`);
+      } else if(acao==='editar'){
+        openEvento(ev);
+      } else if(acao==='excluir'){
+        if(confirm('Excluir este evento?')){ state.eventos = state.eventos.filter(e=>e.id!==id); save(); renderEventos(); }
+      }
+    }
+
+    // --- Turismo ---
+    const selCidade = $("#cidade-select");
+    const listaPontos = $("#pontos-lista");
+
+    function popularSelectCidades(){
+      selCidade.innerHTML = state.cidades.map(c=>`<option value="${c.id}">${c.nome} - ${c.uf}</option>`).join('');
+      $("#pt-cidade").innerHTML = selCidade.innerHTML; // para o modal de ponto
+    }
+
+    function cardPonto(p, cidade){
+      const el = document.createElement('div'); el.className='card'; el.style.gridColumn='span 6';
+      el.innerHTML = `
+        <img class="img" src="${p.img||''}" alt="Imagem do ponto turístico" onerror="this.src='https://picsum.photos/800/450?blur=2'" />
+        <div class="card-body">
+          <div class="row" style="align-items:center; justify-content:space-between">
+            <span class="chip">${p.tipo||'Ponto'}</span>
+            <small class="meta">${cidade.nome}/${cidade.uf}</small>
+          </div>
+          <h3 class="title">${p.nome}</h3>
+          <div class="meta">Horário: ${p.horario||'—'}</div>
+        </div>`;
+      el.querySelectorAll('button').forEach(b=>{
+        b.addEventListener('click', ()=>handleAcaoPonto(b.getAttribute('data-acao'), cidade.id, p.id));
+      });
+      return el;
+    }
+
+    function renderPontos(){
+      const id = selCidade.value; const cidade = state.cidades.find(c=>c.id===id) || state.cidades[0];
+      const q = $("#busca-ponto").value.toLowerCase();
+      listaPontos.innerHTML='';
+      cidade.pontos.filter(p=>!q || `${p.nome} ${p.tipo}`.toLowerCase().includes(q))
+        .forEach(p=> listaPontos.appendChild(cardPonto(p, cidade)));
+    }
+
+    $("#busca-ponto").addEventListener('input', renderPontos);
+
+    // Modal ponto
+    const dlgPonto = $("#modal-ponto");
+    $("#btn-add-ponto").addEventListener('click', ()=>{ dlgPonto.dataset.editing=''; dlgPonto.showModal(); $("#pt-nome").value=''; $("#pt-tipo").value=''; $("#pt-horario").value=''; $("#pt-img").value=''; $("#pt-desc").value=''; $("#pt-cidade").value = selCidade.value; });
+    $("#pt-salvar").addEventListener('click', ()=>{
+      const cid = state.cidades.find(c=>c.id === $("#pt-cidade").value);
+      if(!cid) return;
+      const novo = { id: dlgPonto.dataset.editing || crypto.randomUUID(), nome: $("#pt-nome").value.trim(), tipo: $("#pt-tipo").value.trim(), horario: $("#pt-horario").value.trim(), img: $("#pt-img").value.trim(), desc: $("#pt-desc").value.trim() };
+      if(!novo.nome){ alert('Informe ao menos o nome do ponto.'); return; }
+      const idx = cid.pontos.findIndex(p=>p.id===novo.id);
+      if(idx>=0) cid.pontos[idx]=novo; else cid.pontos.push(novo);
+      save(); dlgPonto.close(); renderPontos();
+    });
+
+    function handleAcaoPonto(acao, cidadeId, pontoId){
+      const cid = state.cidades.find(c=>c.id===cidadeId); if(!cid) return;
+      const p = cid.pontos.find(x=>x.id===pontoId); if(!p) return;
+      if(acao==='detalhes'){
+        alert(`${p.nome} (${p.tipo})\n${p.desc||''}\nHorário: ${p.horario||'—'}`);
+      } else if(acao==='editar'){
+        dlgPonto.dataset.editing = p.id; dlgPonto.showModal();
+        $("#pt-nome").value = p.nome; $("#pt-tipo").value=p.tipo||''; $("#pt-horario").value=p.horario||''; $("#pt-img").value=p.img||''; $("#pt-desc").value=p.desc||''; $("#pt-cidade").value = cidadeId;
+      } else if(acao==='excluir'){
+        if(confirm('Excluir este ponto?')){ cid.pontos = cid.pontos.filter(x=>x.id!==pontoId); save(); renderPontos(); }
+      }
+    }
+
+    // --- Cidades ---
+    const gridCidades = $("#cidades-grid");
+
+    function cardCidade(c){
+      const el = document.createElement('div'); el.className='card'; el.style.gridColumn='span 4';
+      el.innerHTML = `
+        <div class="card-body">
+          <div class="row" style="align-items:center; justify-content:space-between">
+            <span class="chip">${c.uf}</span>
+            <small class="meta">${c.pontos.length} ponto(s)</small>
+          </div>
+          <h3 class="title">${c.nome}</h3>
+          <p class="meta">${c.desc||''}</p>
+        </div>`;
+      el.querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=>handleAcaoCidade(b.getAttribute('data-acao'), c.id)) );
+      return el;
+    }
+
+    function renderCidades(){
+      gridCidades.innerHTML='';
+      state.cidades.forEach(c=> gridCidades.appendChild(cardCidade(c)));
+      popularSelectCidades(); renderPontos();
+    }
+
+    const dlgCidade = $("#modal-cidade");
+    $("#btn-add-cidade").addEventListener('click', ()=>{ dlgCidade.dataset.editing=''; $("#cd-nome").value=''; $("#cd-uf").value='MS'; $("#cd-desc").value=''; dlgCidade.showModal(); });
+    $("#cd-salvar").addEventListener('click', ()=>{
+      const novo = { id: dlgCidade.dataset.editing || crypto.randomUUID(), nome: $("#cd-nome").value.trim(), uf: $("#cd-uf").value.trim().toUpperCase(), desc: $("#cd-desc").value.trim(), pontos: [] };
+      if(!novo.nome || !novo.uf){ alert('Informe nome e UF.'); return; }
+      const idx = state.cidades.findIndex(c=>c.id===novo.id);
+      if(idx>=0) {
+        // preservar pontos existentes ao editar
+        novo.pontos = state.cidades[idx].pontos;
+        state.cidades[idx] = novo;
+      } else { state.cidades.push(novo); }
+      save(); dlgCidade.close(); renderCidades();
+    });
+
+    function handleAcaoCidade(acao, id){
+      const c = state.cidades.find(x=>x.id===id); if(!c) return;
+      if(acao==='ver'){
+        // Troca para a aba turismo com a cidade selecionada
+        const btn = document.querySelector('.tab-btn[data-target="#tab-turismo"]'); btn.click();
+        selCidade.value = id; renderPontos();
+      } else if(acao==='editar'){
+        dlgCidade.dataset.editing = c.id; $("#cd-nome").value=c.nome; $("#cd-uf").value=c.uf; $("#cd-desc").value=c.desc||''; dlgCidade.showModal();
+      } else if(acao==='excluir'){
+        if(confirm('Excluir esta cidade e seus pontos?')){ state.cidades = state.cidades.filter(x=>x.id!==id); save(); renderCidades(); }
+      }
+    }
+
+    // Inicialização
+    renderCidades();
+
+  </script>
+
+  <!-- 
+  Áreas Alteradas
+  -->
+  <script>
+      // Mostrar/ocultar filtros no topo
+  const btnToggleBusca = $("#btn-toggle-busca");
+  const filtrosTopo = $("#filtros-topo");
+
+  btnToggleBusca.addEventListener('click', () => {
+    filtrosTopo.classList.toggle("hidden");
+    if (!filtrosTopo.classList.contains("hidden")) {
+      $("#q").focus();
+    }
+  });
+
+  // Atualiza eventos ao aplicar filtros + troca pra aba de eventos
+  $("#btn-filtrar").addEventListener('click', () => {
+    renderEventos({ q: $("#q").value, cat: $("#f-cat").value, dataMin: $("#f-data").value });
+    $(".tab-btn[data-target='#tab-eventos']").click();
+    filtrosTopo.classList.add("hidden");
+  });
+  </script>
+
+  <!-- NoVO -->
+  <script>
+    const hamburger = document.getElementById('hamburger');
+    const sideMenu = document.getElementById('sideMenu');
+    const closeBtn = document.getElementById('closeBtn');
+
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('active');
+      sideMenu.classList.toggle('active');
+    });
+
+    closeBtn.addEventListener('click', () => {
+      hamburger.classList.remove('active');
+      sideMenu.classList.remove('active');
+    });
+
+    hamburger.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        hamburger.click();
+      }
+    });
+  </script>
+
+  <script>
+      document.querySelectorAll('a[data-url]').forEach(link => {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      const url = this.getAttribute('data-url');
+      if(url) {
+        window.location.href = url;
+      }
+    });
+  });
+  </script>
+   <!-- Novo -->
+</body>
+</html>

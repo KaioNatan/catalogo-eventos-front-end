@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Perfil Dark Theme</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --card: rgba(255,255,255,0.06);
+      --muted: #9fb0c8;
+      --text: #e9f2ff;
+      --brand-1: #74f1ff;
+      --brand-2: #7cffc1;
+      --brand-3: #a58cff;
+      --glow: drop-shadow(0 0 16px rgba(116,241,255,.35));
+      --radius: 20px;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: radial-gradient(1200px 800px at 10% -10%, rgba(116,241,255,.15), transparent),
+                  radial-gradient(1000px 600px at 110% 10%, rgba(165,140,255,.12), transparent),
+                  linear-gradient(180deg, #0a0d12, #0b0f14 30%, #0b0f14 70%, #0a0d12);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .profile-container {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: var(--radius);
+      padding: 24px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: var(--glow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .profile-view {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 16px;
+      width: 100%;
+      margin-bottom: 24px;
+    }
+
+    .profile-pic {
+      width: 120px;
+      height: 120px;
+      border-radius: var(--radius);
+      object-fit: cover;
+      border: 3px solid var(--brand-1);
+      box-shadow: var(--glow);
+    }
+
+    .profile-info {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .profile-info div {
+      background: rgba(255,255,255,0.1);
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+      user-select: none;
+    }
+
+    .profile-info div span.label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--muted);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .edit-button, .btn-save {
+      padding: 12px 20px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+      background: linear-gradient(90deg, var(--brand-1), var(--brand-3));
+      color: var(--bg);
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.3s ease;
+      box-shadow: var(--glow);
+    }
+
+    .edit-button:hover, .btn-save:hover {
+      background: linear-gradient(90deg, var(--brand-3), var(--brand-2));
+    }
+
+    form {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--muted);
+      user-select: none;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    input[type="text"], textarea {
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 1rem;
+      resize: vertical;
+      transition: border-color 0.3s ease;
+    }
+
+    input[type="text"]:focus, textarea:focus {
+      outline: none;
+      border-color: var(--brand-1);
+      box-shadow: 0 0 8px var(--brand-1);
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 16px;
+    }
+
+    .social-icons a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      background-color: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .social-icons a:hover {
+      background-color: var(--brand-1);
+      color: var(--bg);
+      transform: scale(1.15);
+    }
+
+    .social-icons svg {
+      width: 24px;
+      height: 24px;
+      fill: currentColor;
+      pointer-events: none;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* Estilo da primeira parte */
+        :root {
+      --bg: #0b0f14;
+      --card: rgba(255,255,255,0.06);
+      --muted: #9fb0c8;
+      --text: #e9f2ff;
+      --brand-1: #74f1ff;
+      --brand-2: #7cffc1;
+      --brand-3: #a58cff;
+      --glow: drop-shadow(0 0 16px rgba(116,241,255,.35));
+      --radius: 20px;
+    }
+    *{box-sizing:border-box}
+    html{height:100%}
+    body{
+      margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif;
+      color:var(--text);
+      background: radial-gradient(1200px 800px at 10% -10%, rgba(116,241,255,.15), transparent),
+                  radial-gradient(1000px 600px at 110% 10%, rgba(165,140,255,.12), transparent),
+                  linear-gradient(180deg, #0a0d12, #0b0f14 30%, #0b0f14 70%, #0a0d12);
+      min-height:100vh; overflow-x:hidden;
+    }
+    
+    .container{max-width:1200px; margin:0 auto; padding:24px}
+
+    /* Header */
+    .nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  backdrop-filter: blur(12px);
+  background: linear-gradient(180deg, rgba(11,15,20,.75), rgba(11,15,20,.35));
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+    .nav-inner{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 1px;
+    }
+
+    .brand{display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.5px}
+    .logo{width:40px; height:40px; border-radius:10px; background:
+      conic-gradient(from 180deg at 50% 50%, var(--brand-1), var(--brand-2), var(--brand-3), var(--brand-1));
+      filter:var(--glow);
+    }
+    .brand span{font-size:1.25rem}
+
+    /* Tabs */
+    .tabs{display:flex; gap:8px; flex-wrap:wrap}
+    .tab-btn{
+      border:1px solid rgba(255,255,255,.08); background:var(--card); color:var(--text);
+      padding:10px 14px; border-radius:999px; cursor:pointer; font-weight:600; letter-spacing:.2px;
+      transition:transform .15s ease, background .2s ease, border-color .2s ease;
+    }
+    .tab-btn[aria-selected="true"]{
+      background: linear-gradient(90deg, rgba(116,241,255,.18), rgba(165,140,255,.18));
+      border-color: rgba(165,140,255,.45);
+    }
+    .tab-btn:active{transform:scale(.98)}
+
+    /* Hero */
+    .hero{display:grid; grid-template-columns:1.2fr .8fr; gap:20px; align-items:center; padding:24px; }
+
+    .hero-card{background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius);
+      padding:24px; position:relative; overflow:hidden;}
+    .hero-card:before{content:""; position:absolute; inset:-1px; border-radius:inherit; pointer-events:none;
+      background: radial-gradient(600px 200px at 10% 0%, rgba(116,241,255,.15), transparent),
+                  radial-gradient(500px 200px at 90% 20%, rgba(165,140,255,.12), transparent);
+    }
+    .kicker{color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.2em; font-size:.8rem}
+    h1{margin:.2em 0 .6em; font-size:clamp(1.6rem, 1.2rem + 2.5vw, 3rem)}
+    .hero p{color:#cfe0fb; line-height:1.6}
+    .actions{display:flex; gap:12px; margin-top:16px; flex-wrap:wrap}
+
+    /* 
+    Áreas Alteradas
+    */
+    .icon-btn {
+    font-size: 1.2rem;
+    padding: 8px 12px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    cursor: pointer;
+  }
+
+  .filtros-wrap.hidden {
+    display: none;
+  }
+
+  .filtros-wrap {
+  animation: slideDown 0.3s ease;
+  }
+
+  @keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Àreas Alteradas */
+
+    .btn{
+      padding:12px 16px; border-radius:14px; border:1px solid rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+      color:var(--text); font-weight:700; cursor:pointer;
+    }
+    .btn.primary{background:linear-gradient(90deg, rgba(116,241,255,.25), rgba(165,140,255,.25)); border-color:rgba(165,140,255,.45)}
+
+    /* Layout */
+    .grid{display:grid; grid-template-columns:repeat(12,1fr); gap:16px}
+    .col-8{grid-column:span 8}
+    .col-4{grid-column:span 4}
+    @media (max-width: 960px){ .hero{grid-template-columns:1fr} .col-8,.col-4{grid-column:span 12} }
+
+    /* Cards */
+    .card{background:var(--card); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); overflow:hidden}
+    .card .img{aspect-ratio:16/9; background:#0f141b; display:block; width:100%; object-fit:cover}
+    .card-body{padding:16px}
+    .title{font-weight:800; margin:0 0 6px}
+    .meta{color:var(--muted); font-size:.92rem}
+    .chip{display:inline-block; padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.08); font-size:.8rem; font-weight:700}
+
+    /* Panels */
+    .panel{display:none}
+    .panel.active{display:block}
+
+    /* Forms */
+    .field{display:flex; flex-direction:column; gap:6px}
+    .field input, .field select, .field textarea{background:rgba(255,255,255,.06); color:var(--text);
+      border:1px solid rgba(255,255,255,.12); border-radius:12px; padding:10px 12px}
+    .row{display:flex; gap:12px; flex-wrap:wrap}
+    .row > *{flex:1}
+
+    /* Modal */
+    dialog{border:none; border-radius:18px; padding:0; background:var(--card); color:var(--text); width:min(720px, 92vw)}
+    dialog::backdrop{background:rgba(3,8,13,.6)}
+    .modal-header{display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-bottom:1px solid rgba(255,255,255,.08)}
+    .modal-body{padding:20px}
+
+    /* Footer */
+    footer{color:var(--muted); padding:32px 24px; text-align:center; border-top:1px solid rgba(255,255,255,.06)}
+
+    /* Utility */
+    .hidden{display:none}
+
+      /* Parte Nova Adicionada */
+    .pagina-overlay {
+    position: fixed;
+    inset: 0;
+    background: white;
+    z-index: 1000;
+    padding: 2rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .pagina-overlay.hidden {
+    display: none;
+  }
+
+  .pagina-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 1rem;
+  }
+  /* Parte Nova Adicionada */
+
+  /* Parte Nova */
+  * {
+      box-sizing: border-box;
+    }
+     /* Hamburger */
+     .hamburger {
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      width: 30px;
+      height: 25px;
+      margin-right: 12px;
+    }
+
+    .hamburger div {
+      background-color: var(--text);
+      height: 3px;
+      border-radius: 2px;
+      transition: all 0.3s ease;
+      margin-right: 0;
+    }
+
+    /* Menu lateral (estilo Amazon) */
+    .side-menu {
+  position: fixed; 
+  top: 0;
+  left: -300px;   
+  width: 300px;
+  height: 100%;
+  background-color: #232f3e;
+  color: white;
+  transition: left 0.3s ease;  
+  z-index: 1100;
+  padding-top: 90px;
+  
+}
+
+.side-menu.active {
+  left: 0; 
+}
+
+
+
+    .side-menu a {
+      display: block;
+      padding: 1rem 1.5rem;
+      color: white;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .side-menu a:hover {
+      background-color: #37475a;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      font-size: 24px;
+      cursor: pointer;
+      color: white;
+    }
+
+    /* Hamburger transform */
+    .hamburger.active div:nth-child(1) {
+      transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .hamburger.active div:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger.active div:nth-child(3) {
+      transform: rotate(-45deg) translate(6px, -6px);
+    }
+  /* Parte Nova */
+  
+
+  </style>
+</head>
+<body>
+
+  <!-- NavBar do topo -->
+  <header class="nav" role="banner">
+    <div class="nav-inner container">
+      <div class="hamburger" id="hamburger" aria-label="Abrir menu" role="button" tabindex="0">
+        <div></div><div></div><div></div>
+      </div>
+      <div class="brand" aria-label="Marca Dourados+">
+        <div class="logo" aria-hidden="true"></div>
+        <span>Dourados<span style="opacity:.7">+</span></span>
+      </div>
+      <nav class="tabs" role="tablist" aria-label="Seções do site">
+        
+    
+    </div>
+  </header>
+
+  <!-- Menu lateral -->
+  <nav class="side-menu" id="sideMenu" aria-label="Menu lateral de navegação">
+    <span class="close-btn" id="closeBtn" role="button" tabindex="0" aria-label="Fechar menu">&times;</span>
+    <a href="#home" data-url="Projeto Integrador versão alpha 2.0.html">Início</a>
+    <a href="#eventos" data-url="Eventos.html">Eventos e Categorias</a>
+    <a href="#turismo" data-url="TurismoTeste.html">Turismo</a>
+    <a href="#conta" data-url="Conta.html">Sua Conta</a>
+    <a href="#contato" data-url="Contatos.html">Contato</a>
+  </nav>
+        
+      
+    </div>
+
+
+  <div class="profile-container">
+    <!-- Visualização do perfil -->
+    <div class="profile-view" id="profile-view">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQrLJikHHr2xE1uFpvYwN77rW_P-GtX3BV1XQ&s" alt="Foto do perfil" class="profile-pic" id="profile-pic">
+
+      <div class="profile-info">
+        <div><span class="label">Nome</span><span id="display-name">Seu Nome</span></div>
+        <div><span class="label">Email</span><span id="display-email">seu@email.com</span></div>
+        <div><span class="label">Bio</span><span id="display-bio">Sua biografia aqui.</span></div>
+      </div>
+
+      <div class="social-icons">
+        <a href="#" id="instagram" title="Instagram" aria-label="Instagram" target="_blank" rel="noopener noreferrer" tabindex="-1">
+          <svg viewBox="0 0 24 24"><path d="M7.75 2h8.5C19.097 2 21 3.903 21 6.25v8.5c0 2.347-1.903 4.25-4.25 4.25h-8.5C4.903 19 3 17.097 3 14.75v-8.5C3 3.903 4.903 2 7.75 2zm0 2C6.784 4 6 4.784 6 5.75v8.5c0 .966.784 1.75 1.75 1.75h8.5c.966 0 1.75-.784 1.75-1.75v-8.5c0-.966-.784-1.75-1.75-1.75h-8.5z"/><path d="M12 7a5 5 0 100 10 5 5 0 000-10zm0 2a3 3 0 110 6 3 3 0 010-6zM17.5 6.5a1 1 0 11-2 0 1 1 0 012 0z"/></svg>
+        </a>
+        <a href="#" id="x" title="X (Twitter)" aria-label="X" target="_blank" rel="noopener noreferrer" tabindex="-1">
+          <svg viewBox="0 0 24 24"><path d="M22.46 6c-.77.35-1.5.59-2.28.7a3.94 3.94 0 001.7-2.18 7.72 7.72 0 01-2.48.95 3.92 3.92 0 00-6.67 3.58A11.14 11.14 0 013 5.14a3.9 3.9 0 001.21 5.23 3.88 3.88 0 01-1.78-.5v.05a3.92 3.92 0 003.14 3.83 3.94 3.94 0 01-1.77.07 3.92 3.92 0 003.66 2.73A7.87 7.87 0 012 19.54a11.13 11.13 0 006 1.76c7.2 0 11.14-6 11.14-11.14 0-.17-.01-.34-.02-.5A7.94 7.94 0 0022.46 6z"/></svg>
+        </a>
+        <a href="#" id="facebook" title="Facebook" aria-label="Facebook" target="_blank" rel="noopener noreferrer" tabindex="-1">
+          <svg viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.99 3.66 9.13 8.44 9.88v-6.99h-2.54v-2.89h2.54V9.8c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.23.2 2.23.2v2.46h-1.25c-1.23 0-1.61.77-1.61 1.56v1.87h2.74l-.44 2.89h-2.3v6.99C18.34 21.13 22 16.99 22 12z"/></svg>
+        </a>
+      </div>
+
+      <button class="edit-button" id="edit-profile-btn">Editar Perfil</button>
+    </div>
+
+    <!-- Formulário de edição -->
+    <form id="profile-form" class="hidden" autocomplete="off">
+      <div class="field">
+        <label for="name">Nome</label>
+        <input type="text" id="name" name="name" required />
+      </div>
+      <div class="field">
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email" required />
+      </div>
+      <div class="field">
+        <label for="bio">Bio</label>
+        <textarea id="bio" name="bio" rows="4"></textarea>
+      </div>
+      <button type="submit" class="btn-save">Salvar Perfil</button>
+    </form>
+  </div>
+</div>
+
+  <script>
+    const profileView = document.getElementById('profile-view');
+    const profileForm = document.getElementById('profile-form');
+    const editBtn = document.getElementById('edit-profile-btn');
+
+    const displayName = document.getElementById('display-name');
+    const displayEmail = document.getElementById('display-email');
+    const displayBio = document.getElementById('display-bio');
+
+    const inputName = document.getElementById('name');
+    const inputEmail = document.getElementById('email');
+    const inputBio = document.getElementById('bio');
+
+    editBtn.addEventListener('click', () => {
+      // Preenche o formulário com os dados atuais
+      inputName.value = displayName.textContent;
+      inputEmail.value = displayEmail.textContent;
+      inputBio.value = displayBio.textContent;
+
+      // Esconde a visualização e mostra o formulário
+      profileView.classList.add('hidden');
+      profileForm.classList.remove('hidden');
+      inputName.focus();
+    });
+
+    profileForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // Atualiza os dados da visualização com os dados do formulário
+      displayName.textContent = inputName.value;
+      displayEmail.textContent = inputEmail.value;
+      displayBio.textContent = inputBio.value;
+
+      // Alterna as telas
+      profileForm.classList.add('hidden');
+      profileView.classList.remove('hidden');
+    });
+  </script>
+
+  <script>
+      document.getElementById('btn-back').addEventListener('click', () => {
+      window.history.back();});
+  </script>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const sideMenu = document.getElementById('sideMenu');
+  const closeBtn = document.getElementById('closeBtn');
+
+  // Função para abrir/fechar menu lateral
+  function toggleMenu() {
+    const isActive = sideMenu.classList.toggle('active');
+    hamburger.classList.toggle('active', isActive);
+    hamburger.setAttribute('aria-expanded', isActive);
+  }
+
+  hamburger.addEventListener('click', toggleMenu);
+
+  closeBtn.addEventListener('click', () => {
+    sideMenu.classList.remove('active');
+    hamburger.classList.remove('active');
+    hamburger.setAttribute('aria-expanded', false);
+  });
+
+  // Abrir e fechar com teclado para acessibilidade
+  hamburger.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleMenu();
+    }
+  });
+
+  closeBtn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      sideMenu.classList.remove('active');
+      hamburger.classList.remove('active');
+      hamburger.setAttribute('aria-expanded', false);
+      hamburger.focus();
+    }
+  });
+
+  // Fechar menu clicando fora dele
+  window.addEventListener('click', (event) => {
+    if (!sideMenu.contains(event.target) && !hamburger.contains(event.target)) {
+      sideMenu.classList.remove('active');
+      hamburger.classList.remove('active');
+      hamburger.setAttribute('aria-expanded', false);
+    }
+  });
+  
+  // Evita fechar ao clicar dentro do menu
+  sideMenu.addEventListener('click', (event) => {
+    event.stopPropagation();
+  });
+</script>
+
+<script>
+  document.querySelectorAll('.side-menu a').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const url = link.getAttribute('data-url');
+    if (url) {
+      window.location.href = url;
+    }
+  });
+});
+
+</script>
+</body>
+</html>
