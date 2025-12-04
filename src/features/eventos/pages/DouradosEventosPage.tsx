@@ -33,7 +33,7 @@ export const DouradosEventosPage: React.FC = () => {
   const [tab, setTab] = useState<Tab>("eventos");
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
-
+  
   // filtros de eventos
   const [search, setSearch] = useState("");
   const [cat, setCat] = useState("");
