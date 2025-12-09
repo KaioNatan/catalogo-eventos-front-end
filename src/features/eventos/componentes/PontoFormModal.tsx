@@ -57,7 +57,7 @@ export const PontoFormModal: React.FC<PontoFormModalProps> = ({
   };
 
   return (
-    <Modal onClose={onClose}>
+    <Modal onClose={onClose} ariaDescribedBy="titulo-modal-ponto-turistico">
       <div className="mb-4 flex items-center justify-between gap-2">
         <strong className="text-sm md:text-base">
           {initialValue?.id ? "Editar ponto turístico" : "Novo ponto turístico"}

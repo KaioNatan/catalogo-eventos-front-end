@@ -25,7 +25,8 @@ export const EventFormModal: React.FC<EventFormModalProps> = ({
     const cat = (formData.get("cat") as string) || "Show";
     const data = (formData.get("data") as string) || "";
     const hora = (formData.get("hora") as string) || "";
-    const preco = ((formData.get("preco") as string) || "").trim() || "Gratuito";
+    const preco =
+      ((formData.get("preco") as string) || "").trim() || "Gratuito";
     const local = (formData.get("local") as string).trim();
     const img = (formData.get("img") as string).trim();
     const desc = (formData.get("desc") as string).trim();
@@ -49,7 +50,7 @@ export const EventFormModal: React.FC<EventFormModalProps> = ({
   };
 
   return (
-    <Modal onClose={onClose}>
+    <Modal onClose={onClose} ariaDescribedBy="titulo-modal-evento">
       <div className="mb-4 flex items-center justify-between gap-2">
         <strong className="text-sm md:text-base">
           {initialValue?.id ? "Editar evento" : "Novo evento"}

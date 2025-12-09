@@ -39,7 +39,11 @@ export const CidadeFormModal: React.FC<CidadeFormModalProps> = ({
   };
 
   return (
-    <Modal onClose={onClose} className="max-w-xl">
+    <Modal
+      onClose={onClose}
+      className="max-w-xl"
+      ariaDescribedBy="titulo-modal-cidade"
+    >
       <div className="mb-4 flex items-center justify-between gap-2">
         <strong className="text-sm md:text-base">
           {initialValue?.id ? "Editar cidade" : "Nova cidade"}

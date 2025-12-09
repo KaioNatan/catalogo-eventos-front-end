@@ -21,7 +21,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   onDetails,
 }) => {
   return (
-    <Card className="overflow-hidden flex flex-col">
+    <Card as="article" className="overflow-hidden flex flex-col">
       <img
         src={evento.img || ""}
         alt="Imagem do evento"
