@@ -1,18 +1,19 @@
 import React, { useMemo, useState } from "react";
 import { useAppData } from "../../../context/appDataContext";
 import type { Cidade, Evento, PontoTuristico } from "../../../domain";
-import Header from "../componentes/Header";
-import SideBar from "../componentes/SideBar";
 import { Button, Card } from "../../../shared/ui";
-import { EventFilters } from "../componentes/EventFilters";
-import { EventList } from "../componentes/EventList";
-import { TourismSection } from "../componentes/TourismSection";
-import { CitiesSection } from "../componentes/CitiesSection";
-import { EventFormModal } from "../componentes/EventFormModal";
 import { CidadeFormModal } from "../componentes/CidadeFormModal";
+import { CitiesSection } from "../componentes/CitiesSection";
+import { EventFilters } from "../componentes/EventFilters";
+import { EventFormModal } from "../componentes/EventFormModal";
+import { EventList } from "../componentes/EventList";
+import Header from "../componentes/Header";
 import { PontoFormModal } from "../componentes/PontoFormModal";
+import SideBar from "../componentes/SideBar";
+import { TourismSection } from "../componentes/TourismSection";
 
-type Tab = "eventos" | "turismo" | "cidades";
+
+export type Tab = "eventos" | "turismo" | "cidades";
 
 const formatDate = (d: string) =>
   new Date(`${d}T00:00:00`).toLocaleDateString("pt-BR", {
@@ -87,15 +88,19 @@ export const DouradosEventosPage: React.FC = () => {
 
   // === callbacks de CRUD usando o context ===
 
-  const handleSalvarEvento = (dados: Omit<Evento, "id"> & { id?: string }) => {
-    createOrUpdateEvento(dados);
+  const handleSalvarEvento = async (
+    dados: Omit<Evento, "id"> & { id?: string }
+  ) => {
+    await createOrUpdateEvento(dados);
     setEventoEdit(null);
   };
+
 
   const handleExcluirEvento = (id: string) => {
     if (!window.confirm("Excluir este evento?")) return;
     deleteEvento(id);
   };
+
 
   const handleSalvarCidade = (
     dados: Omit<Cidade, "id" | "pontos"> & { id?: string }

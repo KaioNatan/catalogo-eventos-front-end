@@ -1,7 +1,8 @@
-import type { PropsWithChildren } from "react";
+// src/shared/ui/Card.tsx
+import type { ElementType, PropsWithChildren } from "react";
 
 interface CardProps extends PropsWithChildren {
-  as?: "div" | "section" | "article";
+  as?: ElementType;
   className?: string;
 }
 
@@ -9,9 +10,11 @@ export const Card: React.FC<CardProps> = ({
   as: Tag = "div",
   className = "",
   ...rest
-}) => (
-  <Tag
-    className={`rounded-2xl border border-white/10 bg-white/5 ${className}`}
-    {...rest}
-  />
-);
+}) => {
+  return (
+    <Tag
+      className={`rounded-2xl border border-white/10 bg-white/5 ${className}`}
+      {...rest}
+    />
+  );
+};

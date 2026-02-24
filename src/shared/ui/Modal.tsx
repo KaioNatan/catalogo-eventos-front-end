@@ -1,5 +1,9 @@
-import React, { useEffect, useRef } from "react";
-import type { PropsWithChildren } from "react";
+// src/shared/ui/Modal.tsx
+import React, {
+  useEffect,
+  useRef,
+} from "react";
+import type { KeyboardEvent as ReactKeyboardEvent, PropsWithChildren } from "react";
 
 interface ModalProps extends PropsWithChildren {
   onClose: () => void;
@@ -28,9 +32,15 @@ export const Modal: React.FC<ModalProps> = ({
   }, [onClose]);
 
   useEffect(() => {
-    // foco inicial simples
     dialogRef.current?.focus();
   }, []);
+
+  const handleKeyDown = (e: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Escape") {
+      e.stopPropagation();
+      onClose();
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
@@ -41,10 +51,13 @@ export const Modal: React.FC<ModalProps> = ({
         aria-labelledby={ariaLabelledBy}
         aria-describedby={ariaDescribedBy}
         tabIndex={-1}
+        onKeyDown={handleKeyDown}
         className={`w-full max-w-3xl rounded-2xl border border-white/10 bg-slate-900 p-4 md:p-6 ${className}`}
       >
         {children}
       </div>
+
+      {/* overlay clicável */}
       <button
         type="button"
         className="fixed inset-0 -z-10 cursor-default"

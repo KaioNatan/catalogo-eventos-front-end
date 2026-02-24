@@ -1,7 +1,7 @@
 export interface HeaderProps {
   open: boolean;
   handleSideMenuOpen: () => void;
-  handleShowFilters: () => void;
+  handleShowFilters?: () => void;
 }
 
 export default function Header({
@@ -44,16 +44,18 @@ export default function Header({
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            className="inline-flex items-center justify-center gap-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-lg"
-            id="btn-toggle-busca"
-            onClick={() => handleShowFilters()}
-            title="Buscar"
-          >
-            🔍
-          </button>
-        </div>
+        {handleShowFilters && (
+          <div className="flex items-center gap-2">
+            <button
+              className="inline-flex items-center justify-center gap-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-lg"
+              id="btn-toggle-busca"
+              onClick={() => handleShowFilters()}
+              title="Buscar"
+            >
+              🔍
+            </button>
+          </div>
+        )}
       </div>
     </header>
   );

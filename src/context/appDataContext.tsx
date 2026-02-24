@@ -1,3 +1,4 @@
+// src/context/appDataContext.tsx
 import React, {
   createContext,
   useCallback,
@@ -7,8 +8,8 @@ import React, {
   useState,
 } from "react";
 import type { Cidade, Evento, PontoTuristico } from "../domain";
+import { fetchAppState, createEventoApi, updateEventoApi, deleteEventoApi, deleteCidadeApi, updateCidadeApi, createCidadeApi } from "../bff/appBff";
 
-const LS_KEY = "douradosplus-data-v1";
 
 export interface AppState {
   eventos: Evento[];
@@ -18,16 +19,22 @@ export interface AppState {
 interface AppDataContextValue {
   state: AppState;
   setState: React.Dispatch<React.SetStateAction<AppState>>;
+  loading: boolean;
+  error: string | null;
 
-  // Eventos
-  createOrUpdateEvento: (evento: Omit<Evento, "id"> & { id?: string }) => void;
-  deleteEvento: (id: string) => void;
+  // Eventos (AGORA assíncronos)
+  createOrUpdateEvento: (
+    evento: Omit<Evento, "id"> & { id?: string }
+  ) => Promise<void>;
+  deleteEvento: (id: string) => Promise<void>;
 
-  // Cidades
-  createOrUpdateCidade: (cidade: Omit<Cidade, "id" | "pontos"> & { id?: string }) => void;
+  // Cidades (mantém síncrono, por enquanto só no front)
+  createOrUpdateCidade: (
+    cidade: Omit<Cidade, "id" | "pontos"> & { id?: string }
+  ) => void;
   deleteCidade: (id: string) => void;
 
-  // Pontos por cidade
+  // Pontos
   createOrUpdatePonto: (
     cidadeId: string,
     ponto: Omit<PontoTuristico, "id"> & { id?: string }
@@ -35,19 +42,21 @@ interface AppDataContextValue {
   deletePonto: (cidadeId: string, pontoId: string) => void;
 }
 
+
 const AppDataContext = createContext<AppDataContextValue | undefined>(
   undefined
 );
 
+const LS_KEY = "douradosplus-data-v1";
+
 const createId = () => {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
-    return crypto.randomUUID();
+    return crypto.randomUUID() as string;
   }
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 };
 
-// Pode reaproveitar o mesmo initialData que já tínhamos
-const initialState: AppState = {
+const emptyState: AppState = {
   eventos: [],
   cidades: [],
 };
@@ -73,10 +82,14 @@ export const AppDataProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const [state, setState] = useState<AppState>(() => {
-    if (typeof window === "undefined") return initialState;
-    return loadFromStorage() ?? initialState;
+    if (typeof window === "undefined") return emptyState;
+    return loadFromStorage() ?? emptyState;
   });
 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Persistência em localStorage
   useEffect(() => {
     if (typeof window === "undefined") return;
     localStorage.setItem(
@@ -88,62 +101,135 @@ export const AppDataProvider: React.FC<React.PropsWithChildren> = ({
     );
   }, [state]);
 
-  // === Eventos ===
+  // Carregar da fake API se não tiver nada no localStorage
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const hasLocal = loadFromStorage();
+    if (hasLocal) return;
+
+    setLoading(true);
+    fetchAppState()
+      .then((data: AppState) => setState(data))
+      .catch((err: unknown) => {
+        console.error(err);
+        setError("Não foi possível carregar os dados iniciais.");
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  // ====== CRUD Eventos (igual antes, só usando setState) ======
+
+  // ====== CRUD Eventos (agora via fake API) ======
+
   const createOrUpdateEvento: AppDataContextValue["createOrUpdateEvento"] =
-    useCallback((evento) => {
-      setState((prev) => {
-        const id = evento.id ?? createId();
-        const novo: Evento = { ...evento, id };
-        const idx = prev.eventos.findIndex((e) => e.id === id);
-        let lista: Evento[];
-        if (idx >= 0) {
-          lista = [...prev.eventos];
-          lista[idx] = novo;
+    useCallback(async (eventoInput) => {
+      setError(null);
+
+      const isUpdate = !!eventoInput.id;
+      const id = eventoInput.id ?? createId();
+
+      const payload: Evento = {
+        id,
+        titulo: eventoInput.titulo,
+        cat: eventoInput.cat,
+        data: eventoInput.data,
+        hora: eventoInput.hora,
+        preco: eventoInput.preco,
+        local: eventoInput.local,
+        img: eventoInput.img,
+        desc: eventoInput.desc,
+      };
+
+      try {
+        let saved: Evento;
+
+        if (isUpdate) {
+          saved = await updateEventoApi(payload);
         } else {
-          lista = [...prev.eventos, novo];
+          saved = await createEventoApi(payload);
         }
-        return { ...prev, eventos: lista };
-      });
+
+        setState((prev) => {
+          const eventos = [...prev.eventos];
+          const idx = eventos.findIndex((e) => e.id === saved.id);
+
+          if (idx >= 0) {
+            eventos[idx] = saved;
+          } else {
+            eventos.push(saved);
+          }
+
+          return { ...prev, eventos };
+        });
+      } catch (err) {
+        console.error(err);
+        setError("Não foi possível salvar o evento.");
+      }
     }, []);
 
   const deleteEvento: AppDataContextValue["deleteEvento"] = useCallback(
-    (id) => {
-      setState((prev) => ({
-        ...prev,
-        eventos: prev.eventos.filter((e) => e.id !== id),
-      }));
+    async (id) => {
+      setError(null);
+      try {
+        await deleteEventoApi(id);
+        setState((prev) => ({
+          ...prev,
+          eventos: prev.eventos.filter((e) => e.id !== id),
+        }));
+      } catch (err) {
+        console.error(err);
+        setError("Não foi possível excluir o evento.");
+      }
     },
     []
   );
 
-  // === Cidades ===
-  const createOrUpdateCidade: AppDataContextValue["createOrUpdateCidade"] =
-    useCallback((cidade) => {
-      setState((prev) => {
-        const id = cidade.id ?? createId();
-        const existente = prev.cidades.find((c) => c.id === id);
-        const nova: Cidade = {
-          id,
-          nome: cidade.nome,
-          uf: cidade.uf || "MS",
-          desc: cidade.desc ?? "",
-          pontos: existente?.pontos ?? [],
-        };
 
-        const idx = prev.cidades.findIndex((c) => c.id === id);
-        let lista: Cidade[];
-        if (idx >= 0) {
-          lista = [...prev.cidades];
-          lista[idx] = nova;
+  // ====== CRUD Cidades ======
+
+  const createOrUpdateCidade: AppDataContextValue["createOrUpdateCidade"] =
+    useCallback(async (cidade) => {
+      setError(null);
+      const isUpdate = !!cidade.id;
+      const id = cidade.id ?? createId();
+
+      const existente = state.cidades.find((c) => c.id === id);
+      const payload: Cidade = {
+        id,
+        nome: cidade.nome,
+        uf: cidade.uf || "MS",
+        desc: cidade.desc ?? "",
+        pontos: existente?.pontos ?? [],
+      }
+      try {
+        let saved;
+
+        if (isUpdate) {
+          saved = await updateCidadeApi(payload);
         } else {
-          lista = [...prev.cidades, nova];
+          saved = await createCidadeApi(payload);
         }
-        return { ...prev, cidades: lista };
-      });
+        setState((prev) => {
+          const cidades = [...prev.cidades];
+          const idx = prev.cidades.findIndex((c) => c.id === id);
+          if (idx >= 0) {
+            cidades[idx] = saved;
+          } else {
+            cidades.push(saved);
+          }
+
+          return { ...prev, cidades };
+        });
+      } catch (err) {
+        console.error(err);
+        setError("Não foi possível salvar a cidade.");
+      }
     }, []);
 
   const deleteCidade: AppDataContextValue["deleteCidade"] = useCallback(
-    (id) => {
+    async (id) => {
+      await deleteCidadeApi(id)
       setState((prev) => ({
         ...prev,
         cidades: prev.cidades.filter((c) => c.id !== id),
@@ -152,7 +238,8 @@ export const AppDataProvider: React.FC<React.PropsWithChildren> = ({
     []
   );
 
-  // === Pontos ===
+  // ====== CRUD Pontos ======
+
   const createOrUpdatePonto: AppDataContextValue["createOrUpdatePonto"] =
     useCallback((cidadeId, ponto) => {
       setState((prev) => {
@@ -179,7 +266,8 @@ export const AppDataProvider: React.FC<React.PropsWithChildren> = ({
     }, []);
 
   const deletePonto: AppDataContextValue["deletePonto"] = useCallback(
-    (cidadeId, pontoId) => {
+    async (cidadeId, pontoId) => {
+      
       setState((prev) => {
         const cidades = prev.cidades.map((c) => {
           if (c.id !== cidadeId) return c;
@@ -198,6 +286,8 @@ export const AppDataProvider: React.FC<React.PropsWithChildren> = ({
     () => ({
       state,
       setState,
+      loading,
+      error,
       createOrUpdateEvento,
       deleteEvento,
       createOrUpdateCidade,
@@ -207,6 +297,8 @@ export const AppDataProvider: React.FC<React.PropsWithChildren> = ({
     }),
     [
       state,
+      loading,
+      error,
       createOrUpdateEvento,
       deleteEvento,
       createOrUpdateCidade,
