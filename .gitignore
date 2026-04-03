@@ -7,7 +7,13 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+coverage
 node_modules
+
+# Gestor de pacotes: Yarn apenas (yarn.lock). Não commitar lockfiles de npm/pnpm.
+package-lock.json
+pnpm-lock.yaml
+
 dist
 dist-ssr
 *.local
@@ -22,3 +28,19 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+tsconfig.app.tsbuildinfo
+tsconfig.node.tsbuildinfo
+vite.config.d.ts
+vite.config.js
+
+# Terraform
+**/.terraform/
+# Lock em infra/terraform/ deve ser versionado (reprodutibilidade / handover).
+*.tfstate
+*.tfstate.*
+*.tfvars
+!**/terraform.tfvars.example
+crash.log
+override.tf
+override.tf.json

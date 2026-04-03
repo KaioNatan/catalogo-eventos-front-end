@@ -1,0 +1,121 @@
+# Qualidade contínua: Prettier (--check), ESLint, typecheck (tsc -b), testes + cobertura e build de fumaça.
+# Install com HUSKY=0 evita executar o binário husky no runner (hooks são só locais).
+#
+# Mitigação do “build só com URL fictícia”:
+# - validate-vite-build-env (ci-smoke) exige HTTPS parseável + mocks ligados.
+# - deploy valida os mesmos VITE_* com secrets reais via o mesmo script (modo deploy).
+# - Job opcional `integration-build`: defina variáveis de repositório
+#   CI_STAGING_VITE_PUBLIC_BFF_BASE_URL e CI_STAGING_VITE_PUBLIC_SITE_URL (HTTPS, ex. staging);
+#   opcional CI_STAGING_VITE_ADMIN_BFF_BASE_URL (senão reutiliza a pública). Gera build sem mocks,
+#   alinhado ao bundle de produção (não garante que o BFF responda).
+
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    concurrency:
+      group: ci-quality-${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: yarn
+
+      - name: Install
+        env:
+          HUSKY: "0"
+        run: yarn install --frozen-lockfile
+
+      - name: Yarn audit (informativo; não bloqueia merge)
+        continue-on-error: true
+        run: yarn audit --level high
+
+      - name: Prettier (check)
+        run: yarn format:check
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Typecheck
+        run: yarn typecheck
+
+      - name: Test with coverage
+        run: yarn coverage
+        env:
+          CI: true
+
+      - name: Validate Vite env (smoke)
+        env:
+          BUILD_ENV_CHECK: ci-smoke
+          VITE_PUBLIC_BFF_BASE_URL: https://ci.invalid/api
+          VITE_ADMIN_BFF_BASE_URL: https://ci.invalid/api
+          VITE_PUBLIC_SITE_URL: https://ci.invalid
+          VITE_USE_API_MOCKS: "true"
+        run: node scripts/validate-vite-build-env.mjs
+
+      - name: Build (smoke)
+        env:
+          VITE_PUBLIC_BFF_BASE_URL: https://ci.invalid/api
+          VITE_ADMIN_BFF_BASE_URL: https://ci.invalid/api
+          VITE_PUBLIC_SITE_URL: https://ci.invalid
+          VITE_USE_API_MOCKS: "true"
+        run: yarn build
+
+  integration-build:
+    if: ${{ vars.CI_STAGING_VITE_PUBLIC_BFF_BASE_URL != '' && vars.CI_STAGING_VITE_PUBLIC_SITE_URL != '' }}
+    concurrency:
+      group: ci-integration-${{ github.workflow }}-${{ github.ref }}
+      cancel-in-progress: true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: yarn
+
+      - name: Install
+        env:
+          HUSKY: "0"
+        run: yarn install --frozen-lockfile
+
+      - name: Prettier (check)
+        run: yarn format:check
+
+      - name: Typecheck
+        run: yarn typecheck
+
+      - name: Validate Vite env (integration / staging)
+        env:
+          BUILD_ENV_CHECK: ci-integration
+          VITE_PUBLIC_BFF_BASE_URL: ${{ vars.CI_STAGING_VITE_PUBLIC_BFF_BASE_URL }}
+          VITE_ADMIN_BFF_BASE_URL: ${{ vars.CI_STAGING_VITE_ADMIN_BFF_BASE_URL != '' && vars.CI_STAGING_VITE_ADMIN_BFF_BASE_URL || vars.CI_STAGING_VITE_PUBLIC_BFF_BASE_URL }}
+          VITE_PUBLIC_SITE_URL: ${{ vars.CI_STAGING_VITE_PUBLIC_SITE_URL }}
+          VITE_USE_API_MOCKS: "false"
+        run: node scripts/validate-vite-build-env.mjs
+
+      - name: Build (staging URLs, sem mocks)
+        env:
+          VITE_PUBLIC_BFF_BASE_URL: ${{ vars.CI_STAGING_VITE_PUBLIC_BFF_BASE_URL }}
+          VITE_ADMIN_BFF_BASE_URL: ${{ vars.CI_STAGING_VITE_ADMIN_BFF_BASE_URL != '' && vars.CI_STAGING_VITE_ADMIN_BFF_BASE_URL || vars.CI_STAGING_VITE_PUBLIC_BFF_BASE_URL }}
+          VITE_PUBLIC_SITE_URL: ${{ vars.CI_STAGING_VITE_PUBLIC_SITE_URL }}
+          VITE_USE_API_MOCKS: "false"
+        run: yarn build

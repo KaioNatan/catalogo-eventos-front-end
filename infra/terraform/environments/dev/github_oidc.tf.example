@@ -1,0 +1,32 @@
+# Opcional: copie para github_oidc.tf e ajuste github_org / github_repo.
+# O workflow usa `environment: frontend-deploy` (ou DEPLOY_GITHUB_ENVIRONMENT); nesse caso o OIDC `sub`
+# é repo:ORG/REPO:environment:NOME — não ref:refs/heads/main. Defina github_environment_name igual ao
+# Environment do GitHub ou use allowed_ref_pattern com esse sub completo.
+#
+# Se o OIDC provider "token.actions.githubusercontent.com" JÁ existir na conta
+# (criação manual anterior), defina create_oidc_provider = false.
+#
+# Para permitir deploy a partir de qualquer branch (só laboratório):
+#   allow_all_branches = true
+#
+# Para outra branch fixa (sem usar GitHub Environment no job):
+#   allowed_ref_pattern = "repo:ORG/REPO:ref:refs/heads/nome-da-branch"
+
+# module "github_deploy" {
+#   source = "../../modules/github_oidc_frontend_deploy"
+#
+#   role_name                     = "${var.project_name}-${var.environment}-gha-deploy"
+#   github_org                    = "SUA_ORG_OU_USER"
+#   github_repo                   = "catalogo-eventos-front-end"
+#   s3_bucket_arn                 = module.spa.s3_bucket_arn
+#   cloudfront_distribution_arn   = module.spa.cloudfront_distribution_arn
+#   allow_all_branches            = false
+#   github_environment_name       = "frontend-deploy"
+#   allowed_ref_pattern           = ""
+#   create_oidc_provider          = true
+# }
+#
+# output "github_deploy_role_arn" {
+#   value       = module.github_deploy.role_arn
+#   description = "Secret AWS_ROLE_ARN no GitHub"
+# }

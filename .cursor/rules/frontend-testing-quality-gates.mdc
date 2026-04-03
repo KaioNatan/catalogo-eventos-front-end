@@ -1,0 +1,18 @@
+---
+description: Padrões de testes e qualidade no front-end
+alwaysApply: true
+---
+
+Toda solução deve considerar verificabilidade.
+
+Padrões oficiais:
+- Vitest como ferramenta principal de testes
+- testar lógica de domínio de UI, hooks, transformação de dados e contratos relevantes
+- evitar testes frágeis acoplados a detalhes de implementação sem valor real
+
+Ao revisar ou implementar:
+- considerar cenários felizes
+- considerar cenários de erro
+- considerar estados de carregamento
+- considerar acessibilidade mínima
+- considerar regressões em páginas públicas e fluxos críticos do CRM

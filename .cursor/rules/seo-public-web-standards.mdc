@@ -1,0 +1,24 @@
+---
+description: Padrões de SEO, indexação e páginas públicas
+alwaysApply: true
+---
+
+Este projeto possui páginas públicas indexáveis e SEO é requisito crítico.
+
+Sempre considerar:
+- renderização adequada para indexação
+- metadata por página
+- headings e semântica corretos
+- sitemap
+- robots
+- canonical quando aplicável
+- performance web
+- Core Web Vitals
+- separação entre área pública e área CRM
+- governança de scripts e tag manager
+
+Diretrizes:
+- não assumir que SPA pura resolve SEO forte sem avaliar conteúdo público dinâmico
+- distinguir claramente necessidades da área pública e da área autenticada
+- priorizar experiência e indexação para páginas de descoberta orgânica
+- considerar estratégia de mensuração desde o início

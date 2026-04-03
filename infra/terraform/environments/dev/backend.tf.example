@@ -1,0 +1,20 @@
+# Estado remoto Terraform (recomendado com 2+ pessoas ou qualquer CI que aplique infra).
+#
+# Passos:
+# 1. Crie um bucket S3 (ex.: sua-org-terraform-state) com versionamento e encriptação.
+# 2. Crie uma tabela DynamoDB para lock (ex.: terraform-locks; partition key = LockID, String).
+# 3. Copie este ficheiro para backend.tf e ajuste bucket, key, region e dynamodb_table.
+# 4. terraform init -migrate (ou init num clone novo) para adotar o backend remoto.
+# 5. Versionar .terraform.lock.hcl no Git se a equipa alinhar essa política.
+#
+# Não commite backend.tf se contiver nomes que queira manter privados.
+#
+# terraform {
+#   backend "s3" {
+#     bucket         = "sua-org-terraform-state"
+#     key            = "celeiro-front/dev/terraform.tfstate"
+#     region         = "us-east-1"
+#     dynamodb_table = "terraform-locks"
+#     encrypt        = true
+#   }
+# }

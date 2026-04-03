@@ -1,0 +1,18 @@
+project_name = "celeiro-front"
+environment  = "dev"
+aws_region   = "us-east-1"
+
+# Opcional:
+# cloudfront_price_class = "PriceClass_100"
+
+# ---------------------------------------------------------------------------
+# Fase 2 — domínio próprio (ACM us-east-1 + Route 53 + aliases CloudFront)
+# ---------------------------------------------------------------------------
+# Pré-requisito: zona pública no Route 53 (ou delegação NS do registrador para ela).
+#
+# enable_phase2_custom_domain = true
+# dns_hosted_zone_name      = "exemplo.com.br."
+# cloudfront_aliases        = ["app.exemplo.com.br"]
+# acm_primary_domain_name   = "app.exemplo.com.br"
+# acm_subject_alternative_names = [] # ex.: ["www.app.exemplo.com.br"]
+# hsts_max_age_sec          = 31536000

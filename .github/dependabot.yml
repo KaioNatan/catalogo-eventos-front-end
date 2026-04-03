@@ -1,0 +1,36 @@
+# Atualiza dependências com PRs automáticos (supply chain / patches de segurança).
+# Revise os PRs antes de merge, especialmente em actions que rodam com secrets.
+#
+# Gestor de pacotes: Yarn (apenas yarn.lock). O valor package-ecosystem: npm é o nome
+# oficial na API do Dependabot para o registo npm; o bot atualiza yarn.lock quando existe.
+
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - github-actions
+
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - yarn
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      yarn-production:
+        dependency-type: production
+        patterns:
+          - "*"
+      yarn-development:
+        dependency-type: development
+        patterns:
+          - "*"

@@ -1,0 +1,6 @@
+# Dev (vite): em produção, `yarn build` sobrescreve dist/robots.txt via scripts/finalize-public-seo.mjs
+# (inclui Sitemap quando VITE_PUBLIC_SITE_URL está definida no build).
+User-agent: *
+Allow: /
+
+Disallow: /admin

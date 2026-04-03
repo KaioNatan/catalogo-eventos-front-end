@@ -1,0 +1,11 @@
+dist
+coverage
+node_modules
+yarn.lock
+# Gerados por outros gestores (ignorados no Git; manter aqui por segurança)
+package-lock.json
+pnpm-lock.yaml
+*.min.js
+*.min.css
+# Sem parser Prettier padrão (comentários + paths)
+.github/CODEOWNERS

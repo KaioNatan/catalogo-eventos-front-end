@@ -1,0 +1,164 @@
+# Deploy do build Vite para S3 + invalidação CloudFront.
+#
+# Antes de publicar, mantenha o workflow de qualidade verde: `.github/workflows/ci.yml`
+# (lint, testes + cobertura com thresholds, build de fumaça).
+#
+# Autenticação AWS (escolha um modelo):
+#
+# A) Recomendado — OIDC (sem chaves de longa duração no GitHub)
+#    - IAM Role com trust policy para GitHub OIDC (token.actions.githubusercontent.com).
+#    - Permissões: s3 no bucket alvo + cloudfront:CreateInvalidation na distribuição.
+#    - Secret: AWS_ROLE_ARN
+#    - Módulo Terraform: infra/terraform/modules/github_oidc_frontend_deploy (ex.: dev/github_oidc.tf.example)
+#
+# B) Legado — chaves de acesso (evitar em produção)
+#    - Repository variable: AWS_AUTH_METHOD = access-key
+#    - Secrets: AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
+#
+# Variáveis de repositório (mitigação de deploy no bucket errado / go-live):
+#   DEPLOY_S3_BUCKET_PREFIX — se definida, o secret S3_BUCKET deve começar com esse prefixo.
+#   REQUIRE_VITE_PUBLIC_SITE_URL — "true" exige secret VITE_PUBLIC_SITE_URL (HTTPS) no build.
+#   DEPLOY_GITHUB_ENVIRONMENT — nome do Environment GitHub (opcional); padrão: frontend-deploy
+#   DEPLOY_ALLOW_HTTP_BFF — "true" (só laboratório) permite VITE_PUBLIC_BFF_BASE_URL em http://;
+#     padrão exige HTTPS. Útil quando o ALB de dev ainda não tem certificado.
+#
+# VITE_* (BFF, site, admin) são validados por scripts/validate-vite-build-env.mjs (BUILD_ENV_CHECK=deploy),
+# alinhado ao CI em .github/workflows/ci.yml.
+#
+# Ordem do job: validação → build (yarn) → credenciais AWS (OIDC ou chaves) → S3 → CloudFront.
+# Se a validação ou o build falharem, o passo OIDC nem chega a executar — não confundir com falha de trust IAM.
+#
+# Obrigatório no build de produção: VITE_PUBLIC_BFF_BASE_URL (HTTPS).
+# Opcionais: VITE_PUBLIC_SITE_URL, VITE_ADMIN_BFF_BASE_URL, VITE_PUBLIC_GTM_ID, VITE_PUBLIC_SENTRY_DSN.
+# S3_BUCKET, CLOUDFRONT_DISTRIBUTION_ID, AWS_ROLE_ARN (ou access keys).
+
+name: Deploy frontend (S3 + CloudFront)
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-frontend-${{ github.repository }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ vars.DEPLOY_GITHUB_ENVIRONMENT || 'frontend-deploy' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: yarn
+
+      - name: Validate deploy secrets (bucket, HTTPS, SEO opcional)
+        env:
+          S3_BUCKET: ${{ secrets.S3_BUCKET }}
+          CF_DIST_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
+          ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+          AUTH_METHOD: ${{ vars.AWS_AUTH_METHOD }}
+          BFF_URL: ${{ secrets.VITE_PUBLIC_BFF_BASE_URL }}
+          ADMIN_BFF: ${{ secrets.VITE_ADMIN_BFF_BASE_URL }}
+          SITE_URL: ${{ secrets.VITE_PUBLIC_SITE_URL }}
+          BUCKET_PREFIX: ${{ vars.DEPLOY_S3_BUCKET_PREFIX }}
+          REQUIRE_SITE_URL: ${{ vars.REQUIRE_VITE_PUBLIC_SITE_URL }}
+          ALLOW_HTTP_BFF: ${{ vars.DEPLOY_ALLOW_HTTP_BFF }}
+        run: |
+          set -euo pipefail
+          fail() { echo "::error::$1"; exit 1; }
+
+          if [[ -z "${CF_DIST_ID// }" ]]; then
+            fail "Secret CLOUDFRONT_DISTRIBUTION_ID vazio."
+          fi
+          if [[ ! "$CF_DIST_ID" =~ ^E[A-Z0-9]+$ ]] || (( ${#CF_DIST_ID} < 10 || ${#CF_DIST_ID} > 32 )); then
+            fail "CLOUDFRONT_DISTRIBUTION_ID com formato inválido (ID CloudFront, ex.: E1234567890ABC)."
+          fi
+
+          if [[ "$AUTH_METHOD" != "access-key" ]]; then
+            if [[ -z "${ROLE_ARN// }" ]]; then
+              fail "Secret AWS_ROLE_ARN vazio (necessário para OIDC; ou defina AWS_AUTH_METHOD=access-key para legado)."
+            fi
+            if [[ ! "$ROLE_ARN" =~ ^arn:aws:iam::[0-9]{12}:role/ ]] || [[ "$ROLE_ARN" =~ [[:space:]] ]]; then
+              fail "AWS_ROLE_ARN não parece um ARN de role IAM válido (arn:aws:iam::CONTA:role/...)."
+            fi
+          fi
+
+          if [[ -z "${S3_BUCKET// }" ]]; then
+            fail "Secret S3_BUCKET vazio."
+          fi
+          if [[ "$S3_BUCKET" == *' '* ]]; then
+            fail "S3_BUCKET não pode conter espaços."
+          fi
+          if [[ "$S3_BUCKET" == *'/'* || "$S3_BUCKET" == s3:* || "$S3_BUCKET" == *:* ]]; then
+            fail "S3_BUCKET deve ser só o nome do bucket (sem s3://, sem barras, sem : )."
+          fi
+          len=${#S3_BUCKET}
+          if (( len < 3 || len > 63 )); then
+            fail "S3_BUCKET deve ter entre 3 e 63 caracteres."
+          fi
+          if [[ "$S3_BUCKET" =~ [A-Z] ]]; then
+            fail "S3_BUCKET não deve conter letras maiúsculas."
+          fi
+          if [[ ! "$S3_BUCKET" =~ ^[a-z0-9][a-z0-9.-]*[a-z0-9]$ ]] && [[ ! "$S3_BUCKET" =~ ^[a-z0-9]{3,63}$ ]]; then
+            fail "S3_BUCKET com formato inválido (use minúsculas, números, ponto e hífen; regras S3)."
+          fi
+          if [[ -n "${BUCKET_PREFIX:-}" && "$S3_BUCKET" != "$BUCKET_PREFIX"* ]]; then
+            fail "S3_BUCKET deve começar com o prefixo DEPLOY_S3_BUCKET_PREFIX ($BUCKET_PREFIX)."
+          fi
+
+          export VITE_PUBLIC_BFF_BASE_URL="${BFF_URL}"
+          export VITE_ADMIN_BFF_BASE_URL="${ADMIN_BFF}"
+          export VITE_PUBLIC_SITE_URL="${SITE_URL}"
+          export REQUIRE_VITE_PUBLIC_SITE_URL="${REQUIRE_SITE_URL}"
+          export BUILD_ENV_CHECK=deploy
+          node scripts/validate-vite-build-env.mjs
+
+      - name: Install
+        env:
+          HUSKY: "0"
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        env:
+          VITE_USE_API_MOCKS: "false"
+          VITE_PUBLIC_BFF_BASE_URL: ${{ secrets.VITE_PUBLIC_BFF_BASE_URL }}
+          VITE_ADMIN_BFF_BASE_URL: ${{ secrets.VITE_ADMIN_BFF_BASE_URL }}
+          VITE_PUBLIC_SITE_URL: ${{ secrets.VITE_PUBLIC_SITE_URL }}
+          VITE_PUBLIC_GTM_ID: ${{ secrets.VITE_PUBLIC_GTM_ID }}
+          VITE_PUBLIC_SENTRY_DSN: ${{ secrets.VITE_PUBLIC_SENTRY_DSN }}
+        run: yarn build
+
+      # IAM trust da role (AWS_ROLE_ARN) deve permitir o claim OIDC `sub` deste job:
+      # com `environment:` abaixo, o GitHub emite sub repo:ORG/REPO:environment:NOME — não ref:refs/heads/main.
+      # Ver módulo Terraform github_oidc_frontend_deploy (github_environment_name ou allow_all_branches).
+      - name: Configure AWS credentials (OIDC)
+        if: ${{ vars.AWS_AUTH_METHOD != 'access-key' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION || 'us-east-1' }}
+
+      - name: Configure AWS credentials (access keys — legado)
+        if: ${{ vars.AWS_AUTH_METHOD == 'access-key' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION || 'us-east-1' }}
+
+      - name: Sync to S3
+        run: aws s3 sync dist/ "s3://${{ secrets.S3_BUCKET }}/" --delete
+
+      - name: Invalidate CloudFront
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}" \
+            --paths "/*"

@@ -1,0 +1,23 @@
+---
+description: Padrões de infraestrutura AWS para publicação do front-end
+alwaysApply: true
+---
+
+Ao tratar publicação do front-end:
+- usar Terraform como padrão
+- avaliar S3 + CloudFront como baseline para conteúdo estático
+- considerar Route 53 e ACM para domínio e HTTPS
+- configurar comportamento correto para SPA routing
+- configurar cache e invalidation
+- configurar headers de segurança
+- explicar limitações de SPA estática para SEO quando relevantes
+- considerar separação de ambientes
+- prever rollback simples por versão de build
+
+Toda recomendação deve incluir:
+1. arquitetura sugerida
+2. trade-offs
+3. riscos operacionais
+4. estratégia de cache
+5. estratégia de rollback
+6. impacto em SEO e produção

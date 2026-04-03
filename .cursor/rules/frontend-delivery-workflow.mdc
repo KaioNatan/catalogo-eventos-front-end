@@ -1,0 +1,25 @@
+---
+description: Fluxo de trabalho para análise, planejamento, implementação e revisão no front-end
+alwaysApply: true
+---
+
+Fluxo esperado:
+- primeiro entender a codebase
+- depois diagnosticar arquitetura
+- só então propor mudanças
+- implementar de forma incremental
+- revisar antes de considerar concluído
+
+Para tarefas médias e grandes:
+1. entender o problema
+2. mapear domínio e telas afetadas
+3. listar arquivos impactados
+4. propor plano em etapas
+5. explicar trade-offs
+6. só então implementar
+
+Ao final de cada entrega, incluir:
+- resumo do que mudou
+- riscos
+- testes recomendados
+- impactos em SEO, performance e operação quando existirem

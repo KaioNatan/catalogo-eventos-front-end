@@ -1,0 +1,25 @@
+---
+description: Padrões de frontend por domínios e uso de BFF
+alwaysApply: true
+---
+
+Padrões oficiais:
+- frontend organizado por domínios
+- BFF entregando apenas os dados necessários à interface
+- evitar overfetching
+- evitar expor complexidade desnecessária da API na UI
+- componentes com responsabilidade clara
+- separar composição de dados da renderização
+
+Diretrizes:
+- avaliar o domínio impactado antes de implementar
+- manter contratos explícitos entre UI e BFF
+- preservar coesão por domínio
+- evitar acoplamento entre domínios sem necessidade
+- não espalhar lógica de orquestração de dados pela UI
+
+Ao responder, sempre considerar:
+1. organização por domínio
+2. papel do BFF
+3. impacto em coesão e acoplamento
+4. simplicidade e evolução futura

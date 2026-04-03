@@ -1,14 +1,11 @@
-
-
-import React from "react";
+import type { JSX } from "react";
+import { AppProviders } from "./providers/AppProviders";
 import { AppRoutes } from "./routes";
-import { AppDataProvider } from "../context/appDataContext";
 
-export const App: React.FC = () => {
+export default function App(): JSX.Element {
   return (
-    <AppDataProvider>
+    <AppProviders>
       <AppRoutes />
-    </AppDataProvider>
+    </AppProviders>
   );
-};
-
+}

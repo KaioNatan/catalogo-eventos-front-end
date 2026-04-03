@@ -1,0 +1,19 @@
+---
+description: Padrões de observabilidade, analytics e instrumentação web
+alwaysApply: true
+---
+
+Este projeto deve considerar observabilidade e mensuração web desde cedo.
+
+Sempre considerar:
+- tag manager com governança mínima
+- eventos relevantes de negócio e navegação
+- separação entre métricas da área pública e do CRM
+- cuidado com scripts que degradem performance
+- estratégia mínima de monitoramento de erros no front
+- clareza de ownership sobre instrumentação
+
+Diretrizes:
+- não poluir componentes com rastreamento espalhado sem padrão
+- preferir pontos de integração claros para analytics
+- considerar impacto de scripts em performance e indexação

@@ -1,0 +1,7 @@
+# Modelo: descomente e substitua @organizacao/equipe pelos vossos teams ou @utilizadores.
+# Com "Require review from Code Owners" na branch protection, estas linhas passam a exigir aprovação.
+#
+# Exemplos (ajustar antes de ativar regra no GitHub):
+# * @minha-org/frontend
+# /src/ @minha-org/frontend
+# /.github/ @minha-org/plataforma
